@@ -4,6 +4,7 @@ from crawler.worker import Worker
 
 
 # TESTING GIT COMMIT
+# Testing Second Git Commit
 class Crawler(object):
     def __init__(self, config, restart, frontier_factory=Frontier, worker_factory=Worker):
         self.config = config
