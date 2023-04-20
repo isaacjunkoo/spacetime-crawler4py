@@ -1,9 +1,22 @@
 import re
 from urllib.parse import urlparse
+import urllib.request
+import urllib.robotparser
+from utils.response import Response
+from bs4 import BeautifulSoup
+from crawler.frontier import Frontier
+
 
 def scraper(url, resp):
+    """be polite
+    url: a string that was previously in the frontier
+    resp:
+    return: a list of strings
+
+    """
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
+
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -15,16 +28,48 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+    # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
 
-def is_valid(url):
-    # Decide whether to crawl this url or not. 
+    ret_links = []
+    resp = Response(url)
+
+    if resp.status == '200':
+        soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+        for link in soup.find_all('a'):
+            if link not in visited:
+                visited.add(link)
+                ret_links.append(link)
+    else:
+        pass
+    return ret_links
+
+
+def is_valid(url) -> bool:
+    # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
+    robot_protocol = "/robots.txt"
+
+    root_domain = urlparse(url).netloc.split(
+        ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
+
+    # print(root_domain)  # Output: "example.com"
+    root_domain = root_domain + robot_protocol
+
+    # used to parse through robots.txt
+    robot_parser = urllib.robotparser.RobotFileParser()
+    robot_parser.set_url(root_domain)
+
+    # if can't fetch this url, return false
+    if not robot_parser.can_fetch("*", url):
+        return False
+
     try:
         parsed = urlparse(url)
+        # if not an http or https link, return false
         if parsed.scheme not in set(["http", "https"]):
             return False
+        # if the hyperlink url to another location is any of the things below, return false
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -35,6 +80,26 @@ def is_valid(url):
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
+        # after error checking:
+
     except TypeError:
-        print ("TypeError for ", parsed)
+        print("TypeError for ", parsed)
         raise
+
+
+def main():
+    global visited  # all visited links
+    visited = set()
+    frontier = Frontier()  # links to visit
+
+    while not frontier.empty():
+        link = frontier.pop()
+        resp = Response(link)
+        for newLink in extract_next_links(link, resp):
+            frontier.append(newLink)
+            if newLink not in visited:
+                frontier.append(newLink)
+
+
+if __name__ == "__main__":
+    main()
