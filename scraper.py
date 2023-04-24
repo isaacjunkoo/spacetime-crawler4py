@@ -1,6 +1,6 @@
 import re
 from urllib.parse import urlparse
-import urllib.request
+# import urllib.request
 import urllib.robotparser
 from utils.response import Response
 from bs4 import BeautifulSoup
@@ -36,9 +36,7 @@ def extract_next_links(url, resp):
     if resp.status == '200':
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
         for link in soup.find_all('a'):
-            if link not in visited:
-                visited.add(link)
-                ret_links.append(link)
+            ret_links.append(link)
     else:
         pass
     return ret_links
@@ -87,19 +85,19 @@ def is_valid(url) -> bool:
         raise
 
 
-def main():
-    global visited  # all visited links
-    visited = set()
-    frontier = Frontier()  # links to visit
+# def main():
+#     global visited  # all visited links
+#     visited = set()
+#     frontier = Frontier()  # links to visit
 
-    while not frontier.empty():
-        link = frontier.pop()
-        resp = Response(link)
-        for newLink in extract_next_links(link, resp):
-            frontier.append(newLink)
-            if newLink not in visited:
-                frontier.append(newLink)
+#     while not frontier.empty():
+#         link = frontier.pop()
+#         resp = Response(link)
+#         for newLink in extract_next_links(link, resp):
+#             frontier.append(newLink)
+#             if newLink not in visited:
+#                 frontier.append(newLink)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
