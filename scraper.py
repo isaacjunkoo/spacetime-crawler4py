@@ -1,10 +1,10 @@
 import re
 from urllib.parse import urlparse
-# import urllib.request
-import urllib.robotparser
+# import urllib.robotparser
+from urllib import robotparser
 from utils.response import Response
 from bs4 import BeautifulSoup
-from crawler.frontier import Frontier
+# from crawler.frontier import Frontier
 
 
 def scraper(url, resp):
@@ -55,7 +55,9 @@ def is_valid(url) -> bool:
     root_domain = root_domain + robot_protocol
 
     # used to parse through robots.txt
-    robot_parser = urllib.robotparser.RobotFileParser()
+    # robot_parser = urllib.robotparser.RobotFileParser()
+    robot_parser = robotparser.RobotFileParser()
+
     robot_parser.set_url(root_domain)
 
     # if can't fetch this url, return false

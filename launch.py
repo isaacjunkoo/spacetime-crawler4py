@@ -4,6 +4,9 @@ from argparse import ArgumentParser
 from utils.server_registration import get_cache_server
 from utils.config import Config
 from crawler import Crawler
+# the following import help with report requirement 3 & 4:
+from fiftyWords import tokenize, compute_word_frequencies
+from numOfSubdomains import num_of_subdomains
 
 
 def main(config_file, restart):
