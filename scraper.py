@@ -55,8 +55,11 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
+
     robot_protocol = "/robots.txt"
     print("Splitting: ", url)
+    if not re.search("^(http|https)://", url):
+        return
     root_domain = urlparse(url).netloc.split(
         ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
 
