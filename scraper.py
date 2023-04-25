@@ -33,7 +33,6 @@ def extract_next_links(url, resp):
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
     print("DEBUG: SEE IF ENTERED")
     ret_links = []
-    # resp  # = Response(url)
     print("RESPONSE STATUS:", resp.status)
 
     if resp.status == 200:
@@ -42,7 +41,7 @@ def extract_next_links(url, resp):
         for link in soup.find_all('a'):
             newLink = link.get('href')
             ret_links.append(newLink)
-            print("appending:", newLink)
+            # print("appending:", newLink)
         print("HOW MANY URLS:", len(ret_links))
     else:
         print("Failed to connect")
@@ -55,25 +54,43 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    
+
     try:
-    
-    
+
+        # !!!! CAN ONLY CRAWL THESE !!!!
+        #      *.ics.uci.edu/*
+        #      *.cs.uci.edu/*
+        #   *.informatics.uci.edu/*
+        #      *.stat.uci.edu/*
+
         parsed = urlparse(url)
         # if not an http or https link, return false
+
+        # print("parsed scheme: ", parsed.scheme)
+
         if parsed.scheme not in set(["http", "https"]):
             print("NOT IN SCHEME HTTPS")
             return False
-        
+
+        domain = parsed.netloc
+        path = parsed.path
+        pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
+        pattern2 = r'^.*\.cs\.uci\.edu\/.*$'
+        pattern3 = r'^.*\.informatics\.uci\.edu\/.*$'
+        pattern4 = r'^.*\.stat\.uci\.edu\/.*$'
+        if not re.match(pattern1, domain + path) and \
+                not re.match(pattern2, domain + path) and \
+                not re.match(pattern3, domain + path) and \
+                not re.match(pattern4, domain+path):
+            print("invalid domain and path:", domain+path)
+            return False
+
         robot_protocol = "/robots.txt"
-        print("Splitting: ", url)
-        root_domain = ""
-        if re.search("^(http|https)://", url):
-            root_domain = urlparse(url).netloc.split(
-            ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
+        # print("Splitting: ", url)
+        root_domain = parsed.netloc
 
         # print(root_domain)  # Output: "example.com"
-        root_domain = root_domain + robot_protocol
+        root_domain = parsed.scheme + "://" + root_domain + robot_protocol
 
         # used to parse through robots.txt
         # robot_parser = urllib.robotparser.RobotFileParser()
@@ -81,11 +98,13 @@ def is_valid(url) -> bool:
 
         robot_parser.set_url(root_domain)
 
+        robot_parser.read()
+
         # if can't fetch this url, return false
         if not robot_parser.can_fetch("*", url):
             print("Robot not allowed")
             return False
-        
+
         # if the hyperlink url to another location is any of the things below, return false
         extensionNormal = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
