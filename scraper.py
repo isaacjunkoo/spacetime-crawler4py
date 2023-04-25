@@ -55,33 +55,37 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-
-    robot_protocol = "/robots.txt"
-    print("Splitting: ", url)
-    root_domain = ""
-    if re.search("^(http|https)://", url):
-        root_domain = urlparse(url).netloc.split(
-            ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
-
-    # print(root_domain)  # Output: "example.com"
-    root_domain = root_domain + robot_protocol
-
-    # used to parse through robots.txt
-    # robot_parser = urllib.robotparser.RobotFileParser()
-    robot_parser = robotparser.RobotFileParser()
-
-    robot_parser.set_url(root_domain)
-
-    # if can't fetch this url, return false
-    if not robot_parser.can_fetch("*", url):
-        print("Robot not allowed")
-        return False
+    
     try:
+    
+    
         parsed = urlparse(url)
         # if not an http or https link, return false
         if parsed.scheme not in set(["http", "https"]):
             print("NOT IN SCHEME HTTPS")
             return False
+        
+        robot_protocol = "/robots.txt"
+        print("Splitting: ", url)
+        root_domain = ""
+        if re.search("^(http|https)://", url):
+            root_domain = urlparse(url).netloc.split(
+            ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
+
+        # print(root_domain)  # Output: "example.com"
+        root_domain = root_domain + robot_protocol
+
+        # used to parse through robots.txt
+        # robot_parser = urllib.robotparser.RobotFileParser()
+        robot_parser = robotparser.RobotFileParser()
+
+        robot_parser.set_url(root_domain)
+
+        # if can't fetch this url, return false
+        if not robot_parser.can_fetch("*", url):
+            print("Robot not allowed")
+            return False
+        
         # if the hyperlink url to another location is any of the things below, return false
         extensionNormal = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
