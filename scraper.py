@@ -58,11 +58,10 @@ def is_valid(url) -> bool:
 
     robot_protocol = "/robots.txt"
     print("Splitting: ", url)
-    if not re.search("^(http|https)://", url):
-        # print("Regex invalid for", url)
-        return False
-    root_domain = urlparse(url).netloc.split(
-        ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
+    root_domain = ""
+    if re.search("^(http|https)://", url):
+        root_domain = urlparse(url).netloc.split(
+            ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
 
     # print(root_domain)  # Output: "example.com"
     root_domain = root_domain + robot_protocol
@@ -77,7 +76,6 @@ def is_valid(url) -> bool:
     if not robot_parser.can_fetch("*", url):
         print("Robot not allowed")
         return False
-
     try:
         parsed = urlparse(url)
         # if not an http or https link, return false
@@ -85,7 +83,7 @@ def is_valid(url) -> bool:
             print("NOT IN SCHEME HTTPS")
             return False
         # if the hyperlink url to another location is any of the things below, return false
-        return not re.match(
+        extensionNormal = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
@@ -94,9 +92,9 @@ def is_valid(url) -> bool:
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-
+        print("valid found:", extensionNormal)
+        return extensionNormal
         # after error checking:
-
     except TypeError:
         print("TypeError for ", parsed)
         raise
