@@ -33,7 +33,8 @@ def extract_next_links(url, resp):
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
     print("DEBUG: SEE IF ENTERED")
     ret_links = []
-    resp  # = Response(url)
+    # resp  # = Response(url)
+    print("RESPONSE STATUS:", resp.status)
 
     if resp.status == '200':
         print("Successfully connected")
