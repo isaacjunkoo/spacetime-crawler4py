@@ -1,5 +1,5 @@
 import re
-# from urllib.parse import urlparse
+from urllib.parse import urlparse
 # import urllib.robotparser
 from urllib import robotparser
 from utils.response import Response
@@ -29,7 +29,7 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
-
+    print("DEBUG: SEE IF ENTERED")
     ret_links = []
     resp = Response(url)
 
@@ -89,21 +89,3 @@ def is_valid(url) -> bool:
     except TypeError:
         print("TypeError for ", parsed)
         raise
-
-
-# def main():
-#     global visited  # all visited links
-#     visited = set()
-#     frontier = Frontier()  # links to visit
-
-#     while not frontier.empty():
-#         link = frontier.pop()
-#         resp = Response(link)
-#         for newLink in extract_next_links(link, resp):
-#             frontier.append(newLink)
-#             if newLink not in visited:
-#                 frontier.append(newLink)
-
-
-# if __name__ == "__main__":
-#     main()
