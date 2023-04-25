@@ -40,7 +40,9 @@ def extract_next_links(url, resp):
         print("Successfully connected")
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
         for link in soup.find_all('a'):
-            ret_links.append(link.get('href'))
+            newLink = link.get('href')
+            ret_links.append(newLink)
+            print("appending:", newLink)
         print("HOW MANY URLS:", len(ret_links))
     else:
         print("Failed to connect")
