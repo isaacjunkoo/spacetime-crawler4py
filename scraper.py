@@ -59,7 +59,8 @@ def is_valid(url) -> bool:
     robot_protocol = "/robots.txt"
     print("Splitting: ", url)
     if not re.search("^(http|https)://", url):
-        return
+        print("Regex invalid for", url)
+        return False
     root_domain = urlparse(url).netloc.split(
         ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
 
