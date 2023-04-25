@@ -14,6 +14,8 @@ def scraper(url, resp):
     return: a list of strings
 
     """
+    print("CALLING SCRAPER.SCRAPER")
+    print(url)
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
 
