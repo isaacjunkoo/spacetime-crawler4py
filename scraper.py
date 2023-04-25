@@ -40,7 +40,7 @@ def extract_next_links(url, resp):
         for link in soup.find_all('a'):
             ret_links.append(link)
     else:
-        print("failed to connect")
+        print("Failed to connect")
         pass
 
     return ret_links
