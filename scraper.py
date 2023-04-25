@@ -36,11 +36,11 @@ def extract_next_links(url, resp):
     resp  # = Response(url)
 
     if resp.status == '200':
-
         print("Successfully connected")
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
         for link in soup.find_all('a'):
-            ret_links.append(link)
+            print("Link found")
+            ret_links.append(link.get('href'))
     else:
         print("Failed to connect")
         pass

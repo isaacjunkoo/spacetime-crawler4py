@@ -24,7 +24,6 @@ class Worker(Thread):
         # OUR CHANGES
         # OUR CHANGES
         while True:
-
             tbd_url = self.frontier.get_tbd_url()
             print("Got TBD_URL")
             if not tbd_url:
