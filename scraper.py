@@ -41,6 +41,7 @@ def extract_next_links(url, resp):
         for link in soup.find_all('a'):
             print("Link found")
             ret_links.append(link.get('href'))
+        print("HOW MANY URLS:" + len(ret_links))
     else:
         print("Failed to connect")
         pass
