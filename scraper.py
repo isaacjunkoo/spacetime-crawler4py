@@ -1,5 +1,5 @@
 import re
-from urllib.parse import urlparse
+# from urllib.parse import urlparse
 # import urllib.robotparser
 from urllib import robotparser
 from utils.response import Response
@@ -36,15 +36,11 @@ def extract_next_links(url, resp):
     if resp.status == '200':
 
         print("Successfully connected")
-
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
-
         for link in soup.find_all('a'):
-
             ret_links.append(link)
-
     else:
-
+        print("failed to connect")
         pass
 
     return ret_links
