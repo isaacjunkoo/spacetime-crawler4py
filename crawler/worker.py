@@ -22,9 +22,6 @@ class Worker(Thread):
     def run(self):
         print("ENTERED WORKER RUN")
         # OUR CHANGES
-        for seed in self.frontier.config.seed_urls:
-            print(seed)
-            self.frontier.add_url(seed)
         # OUR CHANGES
         while True:
 
