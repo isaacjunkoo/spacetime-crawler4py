@@ -38,6 +38,7 @@ class Worker(Thread):
             # print("About to SCRAPE")
             scraped_urls = scraper.scraper(tbd_url, resp)
             # print("SCRAPED ENDED")
+            print("SCRAPER LENGTH:", len(scraped_url))
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
             self.frontier.mark_url_complete(tbd_url)
