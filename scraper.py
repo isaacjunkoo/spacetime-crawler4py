@@ -36,7 +36,7 @@ def extract_next_links(url, resp):
     # resp  # = Response(url)
     print("RESPONSE STATUS:", resp.status)
 
-    if resp.status == '200':
+    if resp.status == 200:
         print("Successfully connected")
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
         for link in soup.find_all('a'):
