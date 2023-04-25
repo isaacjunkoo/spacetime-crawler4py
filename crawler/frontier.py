@@ -57,6 +57,7 @@ class Frontier(object):
         url = normalize(url)
         urlhash = get_urlhash(url)
         if urlhash not in self.save:
+            print("adding to", url, " to tobedownloaded")
             self.save[urlhash] = (url, False)
             self.save.sync()
             self.to_be_downloaded.append(url)
