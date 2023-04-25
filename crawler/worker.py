@@ -33,6 +33,7 @@ class Worker(Thread):
             if not tbd_url:
                 self.logger.info("Frontier is empty. Stopping Crawler.")
                 break
+            print("Downloading...")
             resp = download(tbd_url, self.config, self.logger)
             print("download done")
             self.logger.info(
