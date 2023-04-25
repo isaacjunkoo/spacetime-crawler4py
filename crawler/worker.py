@@ -21,12 +21,20 @@ class Worker(Thread):
 
     def run(self):
         print("ENTERED WORKER RUN")
+        # OUR CHANGES
+        for seed in self.frontier.config.seed_urls:
+            print(seed)
+            self.frontier.add_url(seed)
+        # OUR CHANGES
         while True:
+
             tbd_url = self.frontier.get_tbd_url()
+            print("Got TBD_URL")
             if not tbd_url:
                 self.logger.info("Frontier is empty. Stopping Crawler.")
                 break
             resp = download(tbd_url, self.config, self.logger)
+            print("download done")
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
