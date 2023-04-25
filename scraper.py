@@ -59,7 +59,7 @@ def is_valid(url) -> bool:
     robot_protocol = "/robots.txt"
     print("Splitting: ", url)
     if not re.search("^(http|https)://", url):
-        print("Regex invalid for", url)
+        # print("Regex invalid for", url)
         return False
     root_domain = urlparse(url).netloc.split(
         ".")[-2] + "." + urlparse(url).netloc.split(".")[-1]  # getting the root domain
@@ -75,12 +75,14 @@ def is_valid(url) -> bool:
 
     # if can't fetch this url, return false
     if not robot_parser.can_fetch("*", url):
+        print("Robot not allowed")
         return False
 
     try:
         parsed = urlparse(url)
         # if not an http or https link, return false
         if parsed.scheme not in set(["http", "https"]):
+            print("NOT IN SCHEME HTTPS")
             return False
         # if the hyperlink url to another location is any of the things below, return false
         return not re.match(
