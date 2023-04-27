@@ -40,6 +40,7 @@ def extract_next_links(url, resp):
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
         for link in soup.find_all('a'):
             newLink = link.get('href')
+            newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
             ret_links.append(newLink)
             # print("appending:", newLink)
         print("HOW MANY URLS:", len(ret_links))
@@ -68,10 +69,12 @@ def is_valid(url) -> bool:
 
         # print("parsed scheme: ", parsed.scheme)
 
+        # if the scheme isnt http or https...
         if parsed.scheme not in set(["http", "https"]):
             print("NOT IN SCHEME HTTPS")
             return False
 
+        # checks if domain+path are within the constraints mentioned above
         domain = parsed.netloc
         path = parsed.path
         pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
@@ -86,10 +89,11 @@ def is_valid(url) -> bool:
             return False
 
         robot_protocol = "/robots.txt"
-        # print("Splitting: ", url)
+
+        # get domain
         root_domain = parsed.netloc
 
-        # print(root_domain)  # Output: "example.com"
+        # assemble  ==> scheme://domain/robots.txt
         root_domain = parsed.scheme + "://" + root_domain + robot_protocol
 
         # used to parse through robots.txt

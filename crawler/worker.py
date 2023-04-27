@@ -5,6 +5,7 @@ from utils.download import download
 from utils import get_logger
 import scraper
 import time
+from tokenize_url import token_url
 
 
 class Worker(Thread):
@@ -21,8 +22,11 @@ class Worker(Thread):
 
     def run(self):
         print("ENTERED WORKER RUN")
-        # OUR CHANGES
-        # OUR CHANGES
+        # OUR CHANGES:
+
+        max_len = 0
+        longest_url = ''
+
         while True:
             tbd_url = self.frontier.get_tbd_url()
             print("Got TBD_URL")
@@ -40,7 +44,18 @@ class Worker(Thread):
             # print("SCRAPED ENDED")
             print("SCRAPER LENGTH:", len(scraped_urls))
             for scraped_url in scraped_urls:
-                self.frontier.add_url(scraped_url)
+                added_url = self.frontier.add_url(scraped_url)
                 # add to frontier
+                # is this where we tokenize ??
+                if added_url:
+                    words, url_len = token_url(scraped_url)
+                    for word in words:
+                        self.frontier.word_map[word] += 1
+                        if url_len > max_len:
+                            longest_url = scraped_url
+                            max_url = url_len
             self.frontier.mark_url_complete(tbd_url)
+
+            # I BROKE HERE REMOVE THIS
+            break
             time.sleep(self.config.time_delay)
