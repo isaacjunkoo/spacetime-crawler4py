@@ -9,7 +9,7 @@ from tokenize_url import token_url
 
 
 class Worker(Thread):
-    def __init__(self, worker_id, config, frontier):
+    def __init__(self, worker_id, config, frontier, max_len=0, longest_url=0):
         self.logger = get_logger(f"Worker-{worker_id}", "Worker")
         self.config = config
         self.frontier = frontier
@@ -24,8 +24,8 @@ class Worker(Thread):
         print("ENTERED WORKER RUN")
         # OUR CHANGES:
 
-        max_len = 0
-        longest_url = ''
+        self.max_len = 0
+        self.longest_url = ''
 
         while True:
             tbd_url = self.frontier.get_tbd_url()
@@ -42,20 +42,39 @@ class Worker(Thread):
             # print("About to SCRAPE")
             scraped_urls = scraper.scraper(tbd_url, resp)
             # print("SCRAPED ENDED")
-            print("SCRAPER LENGTH:", len(scraped_urls))
+            # print("SCRAPER LENGTH:", len(scraped_urls))
             for scraped_url in scraped_urls:
                 added_url = self.frontier.add_url(scraped_url)
                 # add to frontier
                 # is this where we tokenize ??
+
                 if added_url:
-                    words, url_len = token_url(scraped_url)
+
+                    # url_resp = download(scraped_url, self.config, self.logger)
+
+                    # wait should we be using download again
+                    # we're correctly finding the longest url, and we're parsing the words correctly returning
+                    # a good dict of words
+                    #
+
+                    words, url_len = token_url(
+                        scraped_url, self.config, self.logger)
                     for word in words:
                         self.frontier.word_map[word] += 1
-                        if url_len > max_len:
-                            longest_url = scraped_url
-                            max_url = url_len
+                        # below snippet of code is updating the longest url content and length
+                        if url_len > self.max_len:
+                            self.longest_url = scraped_url
+                            self.max_len = url_len
+
             self.frontier.mark_url_complete(tbd_url)
+            print("THIS MANY UNIQUE URLS:", self.frontier.unique_count)
+            ####
+            print("This is the most common words dictionary:",
+                  sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50])
+            print("This is the longest URL",
+                  self.longest_url, "at len", self.max_len)
 
             # I BROKE HERE REMOVE THIS
+
             break
             time.sleep(self.config.time_delay)

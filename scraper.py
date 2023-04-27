@@ -44,9 +44,10 @@ def extract_next_links(url, resp):
             ret_links.append(newLink)
             # print("appending:", newLink)
         print("HOW MANY URLS:", len(ret_links))
+
     else:
         print("Failed to connect")
-        pass
+        # pass
 
     return ret_links
 
