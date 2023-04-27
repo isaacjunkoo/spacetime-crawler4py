@@ -9,13 +9,18 @@ from collections import defaultdict
 
 
 class Frontier(object):
-    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0):
+    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=4, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}):
         self.logger = get_logger("FRONTIER")
         self.config = config
         self.to_be_downloaded = list()
         ####
-        self.unique_count = 0
+        self.unique_count = 4
         self.word_map = defaultdict(int)  # frequency of words
+        self.ics_dict = {}
+        self.cs_dict = {}
+        self.stat_dict = {}
+        self.inf_dict = {}
+
         # self.word_map['anyword'] += 1
         ####
         if not os.path.exists(self.config.save_file) and not restart:
@@ -67,7 +72,7 @@ class Frontier(object):
             self.save[urlhash] = (url, False)
             self.save.sync()
             self.to_be_downloaded.append(url)
-            self.unique_count += 1
+            # self.unique_count += 1
             return True
             ####
         return False

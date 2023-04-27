@@ -5,11 +5,15 @@ from utils.download import download
 from utils import get_logger
 import scraper
 import time
+from similarity import calculate_similarity
 from tokenize_url import token_url
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 class Worker(Thread):
-    def __init__(self, worker_id, config, frontier, max_len=0, longest_url=0):
+    def __init__(self, worker_id, config, frontier, max_len=0, longest_url=''):
         self.logger = get_logger(f"Worker-{worker_id}", "Worker")
         self.config = config
         self.frontier = frontier
@@ -47,18 +51,27 @@ class Worker(Thread):
                 added_url = self.frontier.add_url(scraped_url)
                 # add to frontier
                 # is this where we tokenize ??
-
                 if added_url:
-
-                    # url_resp = download(scraped_url, self.config, self.logger)
-
-                    # wait should we be using download again
-                    # we're correctly finding the longest url, and we're parsing the words correctly returning
-                    # a good dict of words
-                    #
-
-                    words, url_len = token_url(
+                    words, url_len, fingerprint = token_url(
                         scraped_url, self.config, self.logger)
+
+                    # domain = parsed.netloc
+                    # path = parsed.path
+                    # pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
+                    # pattern2 = r'^.*\.cs\.uci\.edu\/.*$'
+                    # pattern3 = r'^.*\.informatics\.uci\.edu\/.*$'
+                    # pattern4 = r'^.*\.stat\.uci\.edu\/.*$'
+
+                    # check the beginning of scraped_url to see which dictionary we compare to
+                    # compare each url inside the specific bucket and then
+                    # if matches 85% or more:
+                    # dont add to frontier but still increment unique urls found by 1
+                    # increment using self.frontier.unqiue_count += 1
+                    # else:
+                    # add to the selected bucket to be referenced again later
+                    # increment unique urls by 1
+                    # increment using self.frontier.unqiue_count += 1
+
                     for word in words:
                         self.frontier.word_map[word] += 1
                         # below snippet of code is updating the longest url content and length
@@ -75,6 +88,24 @@ class Worker(Thread):
                   self.longest_url, "at len", self.max_len)
 
             # I BROKE HERE REMOVE THIS
+
+            # idk where to add the folloing code but i'll leave it here (detecting text similarity) - Angela
+
+            # text1_processed = " ".join(text1_tokens)
+            # text2_processed = " ".join(text2_tokens)
+
+            # vectorizer = TfidfVectorizer()
+            # vectors = vectorizer.fit_transform([text1_processed, text2_processed])
+            # similarity = cosine_similarity(vectors)
+
+            # BELOW CODE COMPARES the similarity score with a threshold value
+            # threshold = 0.8
+            # if similarity[0][1] > threshold:
+            #     print("The two websites' text content is similar.")
+            #     *don't add to list of urls*
+            # else:
+            #     print("The two websites' text content is not similar.")
+            #     *add to list of urls*
 
             break
             time.sleep(self.config.time_delay)
