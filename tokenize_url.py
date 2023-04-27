@@ -1,5 +1,5 @@
 from nltk.corpus import stopwords
-from fuzzywuzzy import fuzz
+from simhash import Simhash
 from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 import ssl
@@ -16,14 +16,13 @@ nltk.download('stopwords')
 def token_url(url, config, logger):
 
     url_resp = download(url, config, logger)
-    # Tokenize the texts
 
     tokenizer = RegexpTokenizer(r'\w+')
     soup = BeautifulSoup(url_resp.raw_response.content,
                          'html.parser')  # getting content
     # strips all extraneous characters, just words
 
-    fingerprint = fuzz.FuzzyWuzzy().fuzz(soup.get_text())
+    simhash_obj = Simhash(soup.get_text())
 
     tokens = tokenizer.tokenize(soup.get_text())
     url_len = len(tokens)
@@ -34,11 +33,7 @@ def token_url(url, config, logger):
         word for word in tokens if word.lower() not in stop_words]
     # print(tokens)
     # Calculate frequency of words
-    return (tokens_without_stop_words, url_len, fingerprint)
-
-
-def determineFrequency(url_text):
-    pass
+    return (tokens_without_stop_words, url_len, simhash_obj, True)
 
 
 if __name__ == "__main__":

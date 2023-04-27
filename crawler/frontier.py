@@ -9,13 +9,14 @@ from collections import defaultdict
 
 
 class Frontier(object):
-    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=4, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}):
+    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}):
         self.logger = get_logger("FRONTIER")
         self.config = config
         self.to_be_downloaded = list()
         ####
-        self.unique_count = 4
+        self.unique_count = 0
         self.word_map = defaultdict(int)  # frequency of words
+
         self.ics_dict = {}
         self.cs_dict = {}
         self.stat_dict = {}
@@ -69,13 +70,15 @@ class Frontier(object):
         urlhash = get_urlhash(url)
         if urlhash not in self.save:
             print("adding to", url, " to tobedownloaded")
+            ###
             self.save[urlhash] = (url, False)
             self.save.sync()
             self.to_be_downloaded.append(url)
+            ###
             # self.unique_count += 1
-            return True
+            return (True, urlhash, url)
             ####
-        return False
+        return (False, urlhash, url)
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)
