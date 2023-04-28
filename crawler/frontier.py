@@ -100,8 +100,10 @@ class Frontier(object):
                     # Normalize to a similarity score between 0 and 1
                     similarity_score = 1 - (hamming_distance / 64)
 
-                    if similarity_score > 0.85:
+                    if similarity_score > 0.80:
                         is_dupe = True
+                        print("FOUND SIMILAR DOCUMENTS:",
+                              str(url), "AND", str(k))
                         break
 
                 if not is_dupe:
