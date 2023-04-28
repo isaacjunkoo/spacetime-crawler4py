@@ -106,11 +106,11 @@ class Frontier(object):
 
                 if not is_dupe:
                     url_dict[url_temp] = simhash_obj
+                    print("Adding:", url, "to tobedownloaded")
+                    self.to_be_downloaded.append(url)
                     # self.frontier.save[urlhash] = (url, False)
                     # self.frontier.save.sync()
                     # self.frontier.to_be_downloaded.append(url)
-
-                self.unique_count += 1
 
                 # check the beginning of scraped_url to see which dictionary we compare to
                 # compare each url inside the specific bucket and then
@@ -125,18 +125,19 @@ class Frontier(object):
                 for word in words:
                     self.word_map[word] += 1
                     # below snippet of code is updating the longest url content and length
-                    if url_len > self.max_len:
-                        self.longest_url = url_temp
-                        self.max_len = url_len
+
+                if url_len > self.max_len:
+                    self.longest_url = url_temp
+                    self.max_len = url_len
 
             #########
-            print("Adding:", url, "to tobedownloaded")
             ###
             self.save[urlhash] = (url, False)
             self.save.sync()
-            self.to_be_downloaded.append(url)
+
+            # self.to_be_downloaded.append(url)
             ###
-            # self.unique_count += 1
+            self.unique_count += 1
             return (True, urlhash, url)
             ####
         return (False, urlhash, url)

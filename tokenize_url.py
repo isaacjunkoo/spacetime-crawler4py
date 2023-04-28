@@ -35,7 +35,7 @@ def token_url(url, config, logger):
         # Calculate frequency of words
         return (tokens_without_stop_words, url_len, simhash_obj, True)
     except:
-        return False
+        return ([], 0, Simhash(""), False)
 
 
 if __name__ == "__main__":

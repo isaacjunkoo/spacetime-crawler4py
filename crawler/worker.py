@@ -13,7 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class Worker(Thread):
-    def __init__(self, worker_id, config, frontier, max_len=0, longest_url=''):
+    def __init__(self, worker_id, config, frontier):
         self.logger = get_logger(f"Worker-{worker_id}", "Worker")
         self.config = config
         self.frontier = frontier
@@ -28,9 +28,6 @@ class Worker(Thread):
         print("ENTERED WORKER RUN")
         # OUR CHANGES:
 
-        self.max_len = 0
-        self.longest_url = ''
-
         while True:
             tbd_url = self.frontier.get_tbd_url()
             print("Got TBD_URL")
@@ -42,7 +39,7 @@ class Worker(Thread):
                 print("This is the most common words dictionary:",
                       sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50])
                 print("This is the longest URL",
-                      self.longest_url, "at len", self.max_len)
+                      self.frontier.longest_url, "at len", self.frontier.max_len)
                 print("Amount of SubDomains for ics.uci.edu:",
                       len(self.frontier.ics_dict.keys()))
                 break

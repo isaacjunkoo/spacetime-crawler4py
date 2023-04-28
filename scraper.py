@@ -54,7 +54,7 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    print("CURR URL:", url, end=" ")
+    # print("CURR URL:", url, end=" ")
     try:
         # !!!! CAN ONLY CRAWL THESE !!!!
         #      *.ics.uci.edu/*
@@ -124,10 +124,10 @@ def is_valid(url) -> bool:
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
         # print("valid found:", extensionNormal)
-        if extensionNormal:
-            print("True")
-        else:
-            print("False")
+        # if extensionNormal:
+        #     print("True")
+        # else:
+        #     print("False")
         return extensionNormal
         # after error checking:
     except TypeError:
