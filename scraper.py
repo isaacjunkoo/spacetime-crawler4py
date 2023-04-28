@@ -14,7 +14,6 @@ def scraper(url, resp):
     return: a list of strings
 
     """
-    # print("CALLING SCRAPER.SCRAPER")
     print(url)
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
@@ -33,7 +32,7 @@ def extract_next_links(url, resp):
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
     # print("DEBUG: SEE IF ENTERED")
     ret_links = []
-    print("RESPONSE STATUS:", resp.status)
+    # print("RESPONSE STATUS:", resp.status)
     if resp.status == 200:
         # print("Successfully connected")
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
@@ -55,7 +54,7 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    print("CURR URL:", url)
+    print("CURR URL:", url, end=" ")
     try:
         # !!!! CAN ONLY CRAWL THESE !!!!
         #      *.ics.uci.edu/*
@@ -97,23 +96,24 @@ def is_valid(url) -> bool:
 
         # used to parse through robots.txt
         # robot_parser = urllib.robotparser.RobotFileParser()
-        print("TRYING TO ROBOT")
+        # print("TRYING TO ROBOT")
         robot_parser = robotparser.RobotFileParser()
         try:
             robot_parser.set_url(root_domain)
 
             robot_parser.read()
         except:
-            print("CAN NOT ROBOT")
+            # print("CAN NOT ROBOT")
             return False
 
-        print("ROBOTED")
+        # print("ROBOTED")
         # if can't fetch this url, return false
         if not robot_parser.can_fetch("*", url):
             # print("Robot not allowed")
             return False
 
         # if the hyperlink url to another location is any of the things below, return false
+
         extensionNormal = not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -124,6 +124,10 @@ def is_valid(url) -> bool:
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
         # print("valid found:", extensionNormal)
+        if extensionNormal:
+            print("True")
+        else:
+            print("False")
         return extensionNormal
         # after error checking:
     except TypeError:

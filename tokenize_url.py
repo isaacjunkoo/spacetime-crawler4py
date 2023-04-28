@@ -14,26 +14,28 @@ nltk.download('stopwords')
 
 
 def token_url(url, config, logger):
+    try:
+        url_resp = download(url, config, logger)
 
-    url_resp = download(url, config, logger)
+        tokenizer = RegexpTokenizer(r'\w+')
+        soup = BeautifulSoup(url_resp.raw_response.content,
+                             'html.parser')  # getting content
+        # strips all extraneous characters, just words
 
-    tokenizer = RegexpTokenizer(r'\w+')
-    soup = BeautifulSoup(url_resp.raw_response.content,
-                         'html.parser')  # getting content
-    # strips all extraneous characters, just words
+        simhash_obj = Simhash(soup.get_text())
 
-    simhash_obj = Simhash(soup.get_text())
+        tokens = tokenizer.tokenize(soup.get_text())
+        url_len = len(tokens)
 
-    tokens = tokenizer.tokenize(soup.get_text())
-    url_len = len(tokens)
-
-    # getting all stopwords in English
-    stop_words = set(stopwords.words('english'))
-    tokens_without_stop_words = [
-        word for word in tokens if word.lower() not in stop_words]
-    # print(tokens)
-    # Calculate frequency of words
-    return (tokens_without_stop_words, url_len, simhash_obj, True)
+        # getting all stopwords in English
+        stop_words = set(stopwords.words('english'))
+        tokens_without_stop_words = [
+            word for word in tokens if word.lower() not in stop_words]
+        # print(tokens)
+        # Calculate frequency of words
+        return (tokens_without_stop_words, url_len, simhash_obj, True)
+    except:
+        return False
 
 
 if __name__ == "__main__":

@@ -6,10 +6,12 @@ from queue import Queue, Empty
 from utils import get_logger, get_urlhash, normalize
 from scraper import is_valid
 from collections import defaultdict
+from tokenize_url import token_url
+import re
 
 
 class Frontier(object):
-    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}):
+    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}, max_len=0, longest_url=''):
         self.logger = get_logger("FRONTIER")
         self.config = config
         self.to_be_downloaded = list()
@@ -21,6 +23,8 @@ class Frontier(object):
         self.cs_dict = {}
         self.stat_dict = {}
         self.inf_dict = {}
+        self.max_len = 0
+        self.longest_url = ''
 
         # self.word_map['anyword'] += 1
         ####
@@ -69,7 +73,64 @@ class Frontier(object):
         url = normalize(url)
         urlhash = get_urlhash(url)
         if urlhash not in self.save:
-            print("adding to", url, " to tobedownloaded")
+            #########
+            # add to frontier
+            # is this where we tokenize ??
+            words, url_len, simhash_obj, is_run = token_url(
+                url_temp, self.config, self.logger)
+            url_dict = {}
+            if is_run:
+                pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
+                pattern2 = r'^.*\.cs\.uci\.edu\/.*$'
+                pattern3 = r'^.*\.informatics\.uci\.edu\/.*$'
+                pattern4 = r'^.*\.stat\.uci\.edu\/.*$'
+
+                if re.match(pattern1, url_temp):
+                    url_dict = self.ics_dict
+                elif re.match(pattern2, url_temp):
+                    url_dict = self.cs_dict
+                elif re.match(pattern3, url_temp):
+                    url_dict = self.inf_dict
+                elif re.match(pattern4, url_temp):
+                    url_dict = self.stat_dict
+
+                is_dupe = False
+                for k, v in url_dict.items():
+                    hamming_distance = v.distance(simhash_obj)
+                    # Normalize to a similarity score between 0 and 1
+                    similarity_score = 1 - (hamming_distance / 64)
+
+                    if similarity_score > 0.85:
+                        is_dupe = True
+                        break
+
+                if not is_dupe:
+                    url_dict[url_temp] = simhash_obj
+                    # self.frontier.save[urlhash] = (url, False)
+                    # self.frontier.save.sync()
+                    # self.frontier.to_be_downloaded.append(url)
+
+                self.unique_count += 1
+
+                # check the beginning of scraped_url to see which dictionary we compare to
+                # compare each url inside the specific bucket and then
+                # if matches 85% or more:
+                # dont add to frontier but still increment unique urls found by 1
+                # increment using self.frontier.unqiue_count += 1
+                # else:
+                # add to the selected bucket to be referenced again later
+                # increment unique urls by 1
+                # increment using self.frontier.unqiue_count += 1
+
+                for word in words:
+                    self.word_map[word] += 1
+                    # below snippet of code is updating the longest url content and length
+                    if url_len > self.max_len:
+                        self.longest_url = url_temp
+                        self.max_len = url_len
+
+            #########
+            print("Adding:", url, "to tobedownloaded")
             ###
             self.save[urlhash] = (url, False)
             self.save.sync()
