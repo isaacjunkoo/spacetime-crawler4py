@@ -1,5 +1,6 @@
 import re
 from urllib.parse import urlparse
+from urllib.parse import urljoin
 # import urllib.robotparser
 from urllib import robotparser
 from utils.response import Response
@@ -30,7 +31,6 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
-    # print("DEBUG: SEE IF ENTERED")
     ret_links = []
     # print("RESPONSE STATUS:", resp.status)
     if resp.status == 200:
@@ -40,7 +40,12 @@ def extract_next_links(url, resp):
             newLink = link.get('href')
             newLink = str(newLink)
             newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
+            if not newLink.startswith('http://') and not url.startswith('https://'):
+                newLink = urljoin(resp.raw_response.url, newLink)
+                #detect relative link                
             ret_links.append(newLink)
+
+
             # print("appending:", newLink)
         # print("HOW MANY URLS:", len(ret_links))
 
