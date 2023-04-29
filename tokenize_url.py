@@ -37,6 +37,7 @@ def token_url(url):
         # Calculate frequency of words
         return (tokens_without_stop_words, url_len, simhash_obj, True)
     except:
+        print("Could Not Tokenize:", str(url))
         return ([], 0, Simhash(""), False)
 
 

@@ -102,8 +102,9 @@ class Frontier(object):
 
                     if similarity_score > 0.83:
                         is_dupe = True
-                        print("FOUND SIMILAR DOCUMENTS:",
+                        print("DUPE!!! SIMILARITY SCORE IS:", similarity_score,
                               str(url), "AND", str(k))
+
                         break
 
                 if not is_dupe:
