@@ -77,7 +77,7 @@ class Frontier(object):
             # add to frontier
             # is this where we tokenize ??
             words, url_len, simhash_obj, is_run = token_url(
-                url_temp, self.config, self.logger)
+                url_temp)
             url_dict = {}
             if is_run:
                 pattern1 = r'^.*\.ics\.uci\.edu\/.*$'

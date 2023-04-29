@@ -14,7 +14,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 
 
-def token_url(url, config, logger):
+def token_url(url):
     try:
         ####
 
