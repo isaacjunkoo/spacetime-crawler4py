@@ -100,7 +100,7 @@ class Frontier(object):
                     # Normalize to a similarity score between 0 and 1
                     similarity_score = 1 - (hamming_distance / 64)
 
-                    if similarity_score > 0.80:
+                    if similarity_score > 0.83:
                         is_dupe = True
                         print("FOUND SIMILAR DOCUMENTS:",
                               str(url), "AND", str(k))
@@ -110,9 +110,6 @@ class Frontier(object):
                     url_dict[url_temp] = simhash_obj
                     print("Adding:", url, "to tobedownloaded")
                     self.to_be_downloaded.append(url)
-                    # self.frontier.save[urlhash] = (url, False)
-                    # self.frontier.save.sync()
-                    # self.frontier.to_be_downloaded.append(url)
 
                 # check the beginning of scraped_url to see which dictionary we compare to
                 # compare each url inside the specific bucket and then
@@ -137,7 +134,6 @@ class Frontier(object):
             self.save[urlhash] = (url, False)
             self.save.sync()
 
-            # self.to_be_downloaded.append(url)
             ###
             self.unique_count += 1
             return (True, urlhash, url)

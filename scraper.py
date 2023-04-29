@@ -32,22 +32,20 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
     ret_links = []
-    # print("RESPONSE STATUS:", resp.status)
+
     if resp.status == 200:
         # print("Successfully connected")
-        soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+
+        soup = BeautifulSoup(resp.raw_response.content,
+                             'html.parser', from_encoding="iso-8859-1")
         for link in soup.find_all('a'):
             newLink = link.get('href')
             newLink = str(newLink)
             newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
             if not newLink.startswith('http://') and not url.startswith('https://'):
                 newLink = urljoin(resp.raw_response.url, newLink)
-                #detect relative link                
+                # detect relative link
             ret_links.append(newLink)
-
-
-            # print("appending:", newLink)
-        # print("HOW MANY URLS:", len(ret_links))
 
     else:
         print("Failed to connect")

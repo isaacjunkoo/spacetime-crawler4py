@@ -49,10 +49,7 @@ class Worker(Thread):
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
 
-            # print("About to SCRAPE")
             scraped_urls = scraper.scraper(tbd_url, resp)
-            # print("SCRAPED ENDED")
-            # print("SCRAPER LENGTH:", len(scraped_urls))
 
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
