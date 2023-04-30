@@ -43,7 +43,12 @@ class Worker(Thread):
                       len(self.frontier.ics_dict.keys()))
                 break
             resp = download(tbd_url, self.config, self.logger)
-
+            if (resp.status == 302):
+                for i in range(1, 5):
+                    resp = download(resp.headers.get('Location'), self.config, self.logger) #detect redirects
+                    if (resp.status != 302):
+                        break
+            #advance thru at most 5 redirects. if it reaches 5, allow scraper to fail this
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
