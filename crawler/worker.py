@@ -53,4 +53,14 @@ class Worker(Thread):
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
 
+            print("THIS MANY UNIQUE URLS:", self.frontier.unique_count)
+            ####
+            print("This is the most common words dictionary:",
+                  sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50])
+            print("This is the longest URL",
+                  self.frontier.longest_url, "at len", self.frontier.max_len)
+            print("Amount of SubDomains for ics.uci.edu:",
+                  len(self.frontier.ics_dict.keys()))
+            break
+
             time.sleep(self.config.time_delay)

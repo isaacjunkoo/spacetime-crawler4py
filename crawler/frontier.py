@@ -8,6 +8,7 @@ from scraper import is_valid
 from collections import defaultdict
 from tokenize_url import token_url
 import re
+from urllib.parse import urlparse
 
 
 class Frontier(object):
@@ -71,13 +72,18 @@ class Frontier(object):
     def add_url(self, url):
         url_temp = url
         url = normalize(url)
+
         urlhash = get_urlhash(url)
+        if ("archive.ics.uci.edu/ml/datasets.php" in url) and (len(urlparse(url).query) != 0):
+            return False
+
         if urlhash not in self.save:
             #########
             # add to frontier
             # is this where we tokenize ??
             words, url_len, simhash_obj, is_run = token_url(
                 url_temp)
+
             url_dict = {}
             if is_run:
                 pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
@@ -137,9 +143,9 @@ class Frontier(object):
 
             ###
             self.unique_count += 1
-            return (True, urlhash, url)
+            # return (True, urlhash, url)
             ####
-        return (False, urlhash, url)
+        # return (False, urlhash, url)
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)

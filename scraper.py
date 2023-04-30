@@ -31,6 +31,7 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     # check if status is 200, if 200 go to resp.raw_response.content and get list of hyperlinks
+
     ret_links = []
 
     if resp.status == 200:

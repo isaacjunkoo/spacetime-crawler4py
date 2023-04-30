@@ -8,6 +8,8 @@ from utils.download import download
 import requests
 from bs4 import BeautifulSoup
 
+from urllib.parse import urlparse
+
 
 ssl._create_default_https_context = ssl._create_unverified_context
 nltk.download('punkt')
@@ -27,7 +29,8 @@ def token_url(url):
 
         simhash_obj = Simhash(soup.get_text())
 
-        tokens = tokenizer.tokenize(soup.get_text())
+        tokens = tokenizer.tokenize(soup.get_text())  # all the words
+
         url_len = len(tokens)
 
         # getting all stopwords in English
@@ -35,6 +38,7 @@ def token_url(url):
         tokens_without_stop_words = [
             word for word in tokens if word.lower() not in stop_words]
         # Calculate frequency of words
+
         return (tokens_without_stop_words, url_len, simhash_obj, True)
     except:
         print("Could Not Tokenize:", str(url))
@@ -43,16 +47,30 @@ def token_url(url):
 
 if __name__ == "__main__":
     print("Hello")
-    # Example usage
-    url = "http://archive.ics.uci.edu/ml/datasets.php"
-    response = requests.get(url)
-    html_content = response.text
+    print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php?").query))
+    # # Example usage
+    # url = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected"
+    # url1 = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected/index.php"
+    # response = requests.get(url)
+    # html_content = response.text
+    # soup = BeautifulSoup(html_content,
+    #                      'html.parser', from_encoding="utf-8")
+    # response1 = requests.get(url1)
+    # html_content1 = response1.text
+    # soup1 = BeautifulSoup(html_content,
+    #                       'html.parser', from_encoding="utf-8")
 
-    soup = BeautifulSoup(html_content,
-                         'html.parser', from_encoding="utf-8")
-    tokenizer = RegexpTokenizer(r'\w+')
-    tokens = tokenizer.tokenize(soup.get_text())
+    # simhash_obj = Simhash(soup.get_text())
+    # simhash_obj1 = Simhash(soup1.get_text())
 
-    print(tokens)
+    # hamming_distance = simhash_obj.distance(simhash_obj1)
+    # # Normalize to a similarity score between 0 and 1
+    # similarity_score = 1 - (hamming_distance / 64)
+    # print(similarity_score)
 
-    # token_url(text1)
+    # # tokenizer = RegexpTokenizer(r'\w+')
+    # # tokens = tokenizer.tokenize(soup.get_text())
+
+    # # print(tokens)
+
+    # # token_url(text1)
