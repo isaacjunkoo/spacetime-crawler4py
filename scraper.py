@@ -5,12 +5,8 @@ from urllib.parse import urljoin
 from urllib import robotparser
 from utils.response import Response
 from bs4 import BeautifulSoup
-import http.client
 # from crawler.frontier import Frontier
 import ssl
-
-import requests  # REMOVE LATER
-import traceback  # remove late
 
 
 def scraper(url, resp):
@@ -59,7 +55,6 @@ def extract_next_links(url, resp):
 
 
 def is_valid(url) -> bool:
-    print()
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
@@ -113,7 +108,6 @@ def is_valid(url) -> bool:
             # print("can read", root_domain)
 
         except:
-            traceback.print_exc()
             # print("CAN NOT ROBOT", url)
             return False
 
@@ -141,6 +135,7 @@ def is_valid(url) -> bool:
 
 
 if __name__ == "__main__":
+    """
     # links = extract_next_links("http://sli.ics.uci.edu/Classes/2016W-178", resp)
     ret_links = []
     response = requests.get("http://sli.ics.uci.edu/Classes/2016W-178")
@@ -172,3 +167,4 @@ if __name__ == "__main__":
     print(is_valid(
         "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank-additional.zip"))
     # test zip, pdf
+    """
