@@ -78,11 +78,8 @@ class Frontier(object):
             return False
 
         if urlhash not in self.save:
-            #########
-            # add to frontier
-            # is this where we tokenize ??
             words, url_len, simhash_obj, is_run = token_url(
-                url_temp)
+                url_temp)  # tokenize
 
             url_dict = {}
             if is_run:
@@ -101,6 +98,7 @@ class Frontier(object):
                     url_dict = self.stat_dict
 
                 is_dupe = False
+
                 for k, v in url_dict.items():
                     hamming_distance = v.distance(simhash_obj)
                     # Normalize to a similarity score between 0 and 1
@@ -120,7 +118,7 @@ class Frontier(object):
 
                 # check the beginning of scraped_url to see which dictionary we compare to
                 # compare each url inside the specific bucket and then
-                # if matches 85% or more:
+                # if matches 83% or more:
                 # dont add to frontier but still increment unique urls found by 1
                 # increment using self.frontier.unqiue_count += 1
                 # else:

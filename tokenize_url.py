@@ -51,16 +51,25 @@ def token_url(url):
 
 
 if __name__ == "__main__":
-    # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
-    response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
-    html_content = response.text
-    soup = BeautifulSoup(html_content,
-                         'html.parser')
-    tokenizer = RegexpTokenizer(r'\w+')
-    tokens = tokenizer.tokenize(soup.get_text())  # all the words
-    print(len(tokens))
-    print("PRINTING SET")
-    print(len(set(tokens)))
+    # "http://sli.ics.uci.edu/Classes/2013-iCamp?action=login"
+    try:
+        r = requests.head(
+            "http://sli.ics.uci.edu/Classes/2013-iCamp?action=download&upname=yelp_data.zip")
+        print(r.status_code)
+        # prints the int of the status code. Find more at httpstatusrappers.com :)
+    except requests.ConnectionError:
+        print("failed to connect")
+
+    # # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
+    # response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
+    # html_content = response.text
+    # soup = BeautifulSoup(html_content,
+    #                      'html.parser')
+    # tokenizer = RegexpTokenizer(r'\w+')
+    # tokens = tokenizer.tokenize(soup.get_text())  # all the words
+    # print(len(tokens))
+    # print("PRINTING SET")
+    # print(len(set(tokens)))
 
     # # Example usage
     # url = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected"

@@ -30,6 +30,7 @@ class Worker(Thread):
         while True:
             tbd_url = self.frontier.get_tbd_url()
             print("Got TBD_URL")
+
             if not tbd_url:
                 self.logger.info("Frontier is empty. Stopping Crawler.")
                 self.frontier.mark_url_complete(tbd_url)
@@ -42,14 +43,16 @@ class Worker(Thread):
                 print("Amount of SubDomains for ics.uci.edu:",
                       len(self.frontier.ics_dict.keys()))
                 break
+
             resp = download(tbd_url, self.config, self.logger)
-            if (resp.status == 302):
+            if (resp.status == 302 or resp.status == 301):
                 for i in range(1, 5):
                     resp = download(resp.headers.get('Location'),
                                     self.config, self.logger)  # detect redirects
-                    if (resp.status != 302):
+                    if (resp.status != 302 and resp.status != 301):
                         break
             # advance thru at most 5 redirects. if it reaches 5, allow scraper to fail this
+
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
