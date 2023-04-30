@@ -43,7 +43,7 @@ def extract_next_links(url, resp):
             newLink = link.get('href')
             newLink = str(newLink)
             newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
-            if not newLink.startswith('http://') and not url.startswith('https://'):
+            if not newLink.startswith('http://') and newLink.startswith('https://'):
                 newLink = urljoin(resp.raw_response.url, newLink)
                 # detect relative link
             ret_links.append(newLink)

@@ -45,10 +45,11 @@ class Worker(Thread):
             resp = download(tbd_url, self.config, self.logger)
             if (resp.status == 302):
                 for i in range(1, 5):
-                    resp = download(resp.headers.get('Location'), self.config, self.logger) #detect redirects
+                    resp = download(resp.headers.get('Location'),
+                                    self.config, self.logger)  # detect redirects
                     if (resp.status != 302):
                         break
-            #advance thru at most 5 redirects. if it reaches 5, allow scraper to fail this
+            # advance thru at most 5 redirects. if it reaches 5, allow scraper to fail this
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
@@ -57,15 +58,5 @@ class Worker(Thread):
 
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)
-
-            print("THIS MANY UNIQUE URLS:", self.frontier.unique_count)
-            ####
-            print("This is the most common words dictionary:",
-                  sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50])
-            print("This is the longest URL",
-                  self.frontier.longest_url, "at len", self.frontier.max_len)
-            print("Amount of SubDomains for ics.uci.edu:",
-                  len(self.frontier.ics_dict.keys()))
-            break
 
             time.sleep(self.config.time_delay)

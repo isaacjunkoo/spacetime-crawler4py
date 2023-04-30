@@ -18,36 +18,50 @@ nltk.download('stopwords')
 
 def token_url(url):
     try:
-        ####
-
         response = requests.get(url)
         html_content = response.text
         soup = BeautifulSoup(html_content,
                              'html.parser')
-        ####
-        tokenizer = RegexpTokenizer(r'\w+')
 
         simhash_obj = Simhash(soup.get_text())
 
+        tokenizer = RegexpTokenizer(r'\w+')
         tokens = tokenizer.tokenize(soup.get_text())  # all the words
 
-        url_len = len(tokens)
+        url_len = len(tokens)  # total tokens
+        unique_len = len(set(tokens))    # only the unique ones
 
-        # getting all stopwords in English
-        stop_words = set(stopwords.words('english'))
-        tokens_without_stop_words = [
-            word for word in tokens if word.lower() not in stop_words]
-        # Calculate frequency of words
+        info_val = unique_len / url_len
+        if info_val > 0.2:
 
-        return (tokens_without_stop_words, url_len, simhash_obj, True)
+            # getting all stopwords in English
+            stop_words = set(stopwords.words('english'))
+            tokens_without_stop_words = [
+                word for word in tokens if word.lower() not in stop_words]
+            # Calculate frequency of words
+
+            return (tokens_without_stop_words, url_len, simhash_obj, True)
+        else:
+            print("TOO LOW INFORMATION VALUE. WILL NOT ADD:",
+                  str(url), "INFO VAL: ", info_val)
+            return ([], 0, Simhash(""), False)
     except:
         print("Could Not Tokenize:", str(url))
         return ([], 0, Simhash(""), False)
 
 
 if __name__ == "__main__":
-    print("Hello")
-    print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php?").query))
+    # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
+    response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
+    html_content = response.text
+    soup = BeautifulSoup(html_content,
+                         'html.parser')
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(soup.get_text())  # all the words
+    print(len(tokens))
+    print("PRINTING SET")
+    print(len(set(tokens)))
+
     # # Example usage
     # url = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected"
     # url1 = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected/index.php"
