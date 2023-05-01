@@ -43,7 +43,7 @@ class Worker(Thread):
                 print("Amount of SubDomains for ics.uci.edu:",
                       len(self.frontier.ics_dict.keys()))
                 break
-            
+
             try:
                 resp = download(tbd_url, self.config, self.logger)
                 if (resp.status == 302 or resp.status == 301):
@@ -64,6 +64,5 @@ class Worker(Thread):
                     self.frontier.add_url(scraped_url)
             except:
                 continue
-
 
             time.sleep(self.config.time_delay)

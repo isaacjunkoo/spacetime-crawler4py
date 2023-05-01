@@ -32,7 +32,7 @@ def token_url(url):
         unique_len = len(set(tokens))    # only the unique ones
 
         info_val = unique_len / url_len
-        if info_val > 0.2:
+        if (info_val > 0.2) and (unique_len > 150):
 
             # getting all stopwords in English
             stop_words = set(stopwords.words('english'))
@@ -43,8 +43,8 @@ def token_url(url):
             return (tokens_without_stop_words, url_len, simhash_obj, True)
         else:
             print("TOO LOW INFORMATION VALUE. WILL NOT ADD:",
-                  str(url), "INFO VAL: ", info_val)
-            return ([], 0, Simhash(""), False)
+                  str(url), "INFO VAL: ", info_val, "LENGTH:", unique_len)
+            return ([], 0, Simhash(""), True)
     except:
         print("Could Not Tokenize:", str(url))
         return ([], 0, Simhash(""), False)
