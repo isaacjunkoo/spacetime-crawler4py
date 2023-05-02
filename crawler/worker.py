@@ -42,6 +42,19 @@ class Worker(Thread):
                       self.frontier.longest_url, "at len", self.frontier.max_len)
                 print("Amount of SubDomains for ics.uci.edu:",
                       len(self.frontier.ics_dict.keys()))
+                try:
+                    with open("crawl_results.txt", "w+") as f:
+                        f.write("THIS MANY UNIQUE URLS:",
+                                self.frontier.unique_count, "\n")
+
+                        f.write("This is the most common words dictionary:",
+                                sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50], "\n")
+
+                        f.write("Amount of SubDomains for ics.uci.edu: " +
+                                len(self.frontier.ics_dict.keys()) + "\n")
+                except:
+                    pass
+
                 break
 
             try:
@@ -58,11 +71,14 @@ class Worker(Thread):
                     f"Downloaded {tbd_url}, status <{resp.status}>, "
                     f"using cache {self.config.cache_server}.")
 
+                with open("crawl_results.txt", "w+") as f:
+                    f.write(str(tbd_url) + "\n")
+
                 scraped_urls = scraper.scraper(tbd_url, resp)
 
                 for scraped_url in scraped_urls:
                     self.frontier.add_url(scraped_url)
             except:
-                continue
+                pass
 
             time.sleep(self.config.time_delay)

@@ -27,7 +27,6 @@ class Frontier(object):
         self.max_len = 0
         self.longest_url = ''
 
-        # self.word_map['anyword'] += 1
         ####
         if not os.path.exists(self.config.save_file) and not restart:
             # Save file does not exist, but request to load save.
