@@ -42,7 +42,7 @@ def token_url(url):
 
             return (tokens_without_stop_words, url_len, simhash_obj, True)
         else:
-            print("TOO LOW INFORMATION VALUE. WILL NOT ADD:",
+            print("LOW INFORMATION / SHORT. WILL NOT ADD:",
                   str(url), "INFO VAL: ", info_val, "LENGTH:", unique_len)
             return ([], 0, Simhash(""), True)
     except:
@@ -52,13 +52,13 @@ def token_url(url):
 
 if __name__ == "__main__":
     # "http://sli.ics.uci.edu/Classes/2013-iCamp?action=login"
-    try:
-        r = requests.head(
-            "http://sli.ics.uci.edu/Classes/2013-iCamp?action=download&upname=yelp_data.zip")
-        print(r.status_code)
-        # prints the int of the status code. Find more at httpstatusrappers.com :)
-    except requests.ConnectionError:
-        print("failed to connect")
+    # try:
+    #     r = requests.head(
+    #         "http://sli.ics.uci.edu/Classes/2013-iCamp?action=download&upname=yelp_data.zip")
+    #     print(r.status_code)
+    #     # prints the int of the status code. Find more at httpstatusrappers.com :)
+    # except requests.ConnectionError:
+    #     print("failed to connect")
 
     # # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
     # response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
@@ -71,9 +71,9 @@ if __name__ == "__main__":
     # print("PRINTING SET")
     # print(len(set(tokens)))
 
-    # # Example usage
-    # url = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected"
-    # url1 = "https://www.ics.uci.edu/community/alumni/index.php/stayconnected/index.php"
+    # # # Example usage
+    # url = "https://www.informatics.uci.edu/"
+    # url1 = "https://www.ics.uci.edu/"
     # response = requests.get(url)
     # html_content = response.text
     # soup = BeautifulSoup(html_content,
@@ -86,10 +86,14 @@ if __name__ == "__main__":
     # simhash_obj = Simhash(soup.get_text())
     # simhash_obj1 = Simhash(soup1.get_text())
 
-    # hamming_distance = simhash_obj.distance(simhash_obj1)
-    # # Normalize to a similarity score between 0 and 1
-    # similarity_score = 1 - (hamming_distance / 64)
-    # print(similarity_score)
+    simhash_obj = Simhash("a")
+    simhash_obj1 = Simhash(
+        "testing a string asdk askd askjdas kja skjas dkjhas kjha sdkjhas kjhas dkjha sdkjha testing a string asdk askd askjdas kja skjas dkjhas kjha sdkjhas kjhas dkjha sdkjha")
+
+    hamming_distance = simhash_obj.distance(simhash_obj1)
+    # Normalize to a similarity score between 0 and 1
+    similarity_score = 1 - (hamming_distance / 64)
+    print(similarity_score)
 
     # # tokenizer = RegexpTokenizer(r'\w+')
     # # tokens = tokenizer.tokenize(soup.get_text())

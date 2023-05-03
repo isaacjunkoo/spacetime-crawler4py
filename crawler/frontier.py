@@ -84,14 +84,14 @@ class Frontier(object):
 
         if urlhash not in self.save:
             words, url_len, simhash_obj, is_run = token_url(
-                url_temp)  # tokenize
+                url_temp)
 
             url_dict = {}
             if is_run:
-                pattern1 = r'^.*\.ics\.uci\.edu\/.*$'
-                pattern2 = r'^.*\.cs\.uci\.edu\/.*$'
-                pattern3 = r'^.*\.informatics\.uci\.edu\/.*$'
-                pattern4 = r'^.*\.stat\.uci\.edu\/.*$'
+                pattern1 = r'^.*\.ics\.uci\.edu.*$'
+                pattern2 = r'^.*\.cs\.uci\.edu.*$'
+                pattern3 = r'^.*\.informatics\.uci\.edu.*$'
+                pattern4 = r'^.*\.stat\.uci\.edu.*$'
 
                 if re.match(pattern1, url_temp):
                     url_dict = self.ics_dict
@@ -116,39 +116,28 @@ class Frontier(object):
 
                         break
 
+                # url_dict[url_temp] = simhash_obj
+                # print("Adding:", url, "to tobedownloaded")
+                # self.to_be_downloaded.append(url)
+
                 if not is_dupe:
+                    for word in words:
+                        self.word_map[word] += 1
+                        # below snippet of code is updating the longest url content and length
                     url_dict[url_temp] = simhash_obj
-                    print("Adding:", url, "to tobedownloaded")
-                    self.to_be_downloaded.append(url)
-
-                # check the beginning of scraped_url to see which dictionary we compare to
-                # compare each url inside the specific bucket and then
-                # if matches 83% or more:
-                # dont add to frontier but still increment unique urls found by 1
-                # increment using self.frontier.unqiue_count += 1
-                # else:
-                # add to the selected bucket to be referenced again later
-                # increment unique urls by 1
-                # increment using self.frontier.unqiue_count += 1
-
-                for word in words:
-                    self.word_map[word] += 1
-                    # below snippet of code is updating the longest url content and length
 
                 if url_len > self.max_len:
                     self.longest_url = url_temp
                     self.max_len = url_len
 
-            #########
             ###
             self.save[urlhash] = (url, False)
             self.save.sync()
+            print("Adding:", url, "To Frontier")
+            self.to_be_downloaded.append(url)
 
             ###
             self.unique_count += 1
-            # return (True, urlhash, url)
-            ####
-        # return (False, urlhash, url)
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)

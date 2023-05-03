@@ -1,11 +1,8 @@
 import re
 from urllib.parse import urlparse
 from urllib.parse import urljoin
-# import urllib.robotparser
 from urllib import robotparser
-from utils.response import Response
 from bs4 import BeautifulSoup
-# from crawler.frontier import Frontier
 import ssl
 
 
@@ -35,6 +32,8 @@ def extract_next_links(url, resp):
 
     ret_links = []
 
+    # WE NEED TO HANDLE DIFFERENT VALID RESPONSE CODES
+
     if resp.status == 200:
         # print("Successfully connected")
         soup = BeautifulSoup(resp.raw_response.content,
@@ -58,7 +57,6 @@ def is_valid(url) -> bool:
     # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    # print("CURR URL:", url, end=" ")
     try:
         # !!!! CAN ONLY CRAWL THESE !!!!
         #      *.ics.uci.edu/*
@@ -70,7 +68,6 @@ def is_valid(url) -> bool:
         # if not an http or https link (if the scheme isnt http or https...), return false
         # print("parsed scheme: ", parsed.scheme)
         if parsed.scheme not in set(["http", "https"]):
-            # print("NOT IN SCHEME HTTPS")
             return False
 
         # checks if domain+path are within the constraints mentioned above
@@ -84,7 +81,6 @@ def is_valid(url) -> bool:
                 not re.match(pattern2, domain + path) and \
                 not re.match(pattern3, domain + path) and \
                 not re.match(pattern4, domain+path):
-            # print("invalid domain and path:", domain+path)
             return False
 
         robot_protocol = "/robots.txt"
@@ -103,12 +99,9 @@ def is_valid(url) -> bool:
 
         try:
             robot_parser.set_url(root_domain)
-            # print("can set url", root_domain, "from ", url)
             robot_parser.read()
-            # print("can read", root_domain)
 
         except:
-            # print("CAN NOT ROBOT", url)
             return False
 
         # if can't fetch this url, return false

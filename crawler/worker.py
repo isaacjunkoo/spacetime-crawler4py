@@ -48,7 +48,7 @@ class Worker(Thread):
                                 self.frontier.unique_count, "\n")
 
                         f.write("This is the most common words dictionary:",
-                                sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50], "\n")
+                                sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:100], "\n")
 
                         f.write("Amount of SubDomains for ics.uci.edu: " +
                                 len(self.frontier.ics_dict.keys()) + "\n")
@@ -63,6 +63,7 @@ class Worker(Thread):
                     for i in range(1, 5):
                         resp = download(resp.headers.get('Location'),
                                         self.config, self.logger)  # detect redirects
+
                         if (resp.status != 302 and resp.status != 301):
                             break
                 # advance thru at most 5 redirects. if it reaches 5, allow scraper to fail this
@@ -70,9 +71,6 @@ class Worker(Thread):
                 self.logger.info(
                     f"Downloaded {tbd_url}, status <{resp.status}>, "
                     f"using cache {self.config.cache_server}.")
-
-                with open("crawl_results.txt", "w+") as f:
-                    f.write(str(tbd_url) + "\n")
 
                 scraped_urls = scraper.scraper(tbd_url, resp)
 
