@@ -103,38 +103,43 @@ class Frontier(object):
                     url_dict = self.stat_dict
 
                 is_dupe = False
-
+                # if is_enough:
                 for k, v in url_dict.items():
                     hamming_distance = v.distance(simhash_obj)
                     # Normalize to a similarity score between 0 and 1
                     similarity_score = 1 - (hamming_distance / 64)
 
-                    if similarity_score > 0.83:
+                    if similarity_score > 0.86:
                         is_dupe = True
                         print("DUPE!!! SIMILARITY SCORE IS:", similarity_score,
                               str(url), "AND", str(k))
-
                         break
 
-                # url_dict[url_temp] = simhash_obj
-                # print("Adding:", url, "to tobedownloaded")
-                # self.to_be_downloaded.append(url)
-
                 if not is_dupe:
+                    # if isn't dupe,
+                    # adds the tokens into the data
                     for word in words:
                         self.word_map[word] += 1
                         # below snippet of code is updating the longest url content and length
+
+                    # add simhash to dictionary
                     url_dict[url_temp] = simhash_obj
 
+                    # and adds to the frontier
+                    print("Adding:", url, "To Frontier")
+                    self.to_be_downloaded.append(url)
+
+                # no matter what, check if its the longest url
                 if url_len > self.max_len:
                     self.longest_url = url_temp
                     self.max_len = url_len
 
             ###
+
             self.save[urlhash] = (url, False)
             self.save.sync()
-            print("Adding:", url, "To Frontier")
-            self.to_be_downloaded.append(url)
+            # print("Adding:", url, "To Frontier")
+            # self.to_be_downloaded.append(url)
 
             ###
             self.unique_count += 1

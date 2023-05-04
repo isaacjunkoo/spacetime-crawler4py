@@ -42,9 +42,9 @@ def token_url(url):
 
             return (tokens_without_stop_words, url_len, simhash_obj, True)
         else:
-            print("LOW INFORMATION / SHORT. WILL NOT ADD:",
-                  str(url), "INFO VAL: ", info_val, "LENGTH:", unique_len)
-            return ([], 0, Simhash(""), True)
+            print("LOW INFORMATION / SHORT:", str(url),
+                  "INFO VAL: ", info_val, "LENGTH:", unique_len)
+            return ([], 0, simhash_obj, True)
     except:
         print("Could Not Tokenize:", str(url))
         return ([], 0, Simhash(""), False)
@@ -73,24 +73,23 @@ if __name__ == "__main__":
 
     # # # Example usage
     # url = "https://www.informatics.uci.edu/"
-    # url1 = "https://www.ics.uci.edu/"
+    url1 = "https://www.ics.uci.edu/"
     # response = requests.get(url)
     # html_content = response.text
     # soup = BeautifulSoup(html_content,
     #                      'html.parser', from_encoding="utf-8")
-    # response1 = requests.get(url1)
-    # html_content1 = response1.text
-    # soup1 = BeautifulSoup(html_content,
-    #                       'html.parser', from_encoding="utf-8")
+    response1 = requests.get(url1)
+    html_content1 = response1.text
+    soup1 = BeautifulSoup(html_content1,
+                          'html.parser')
 
     # simhash_obj = Simhash(soup.get_text())
-    # simhash_obj1 = Simhash(soup1.get_text())
+    simhash_obj1 = Simhash(soup1.get_text())
 
-    simhash_obj = Simhash("a")
-    simhash_obj1 = Simhash(
-        "testing a string asdk askd askjdas kja skjas dkjhas kjha sdkjhas kjhas dkjha sdkjha testing a string asdk askd askjdas kja skjas dkjhas kjha sdkjhas kjhas dkjha sdkjha")
+    simhash_obj = Simhash("")
+    # simhash_obj1 = Simhash("testing a string asdk")
 
-    hamming_distance = simhash_obj.distance(simhash_obj1)
+    hamming_distance = simhash_obj1.distance(simhash_obj)
     # Normalize to a similarity score between 0 and 1
     similarity_score = 1 - (hamming_distance / 64)
     print(similarity_score)
