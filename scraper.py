@@ -119,8 +119,8 @@ def is_valid(url) -> bool:
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|rdata|rds|matvar"
             + r"|epub|dll|cnf|tgz|sha1|flac|key|gct|mpg|nc|nc4|mrc|mrcs|pkl|lsm"
             + r"|thmx|mso|arff|rtf|jar|csv|dcm|obj|stl|mzml|mzxml|sbml|sim|simdata|odt|czi|mat|czi"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|js|rawdata|fasta"
-            + r"|bigwig|bw|bai|bam|ppsx|pps|bam|fastq|vcf|tif|bed|fits|nc|mtx|h5|hdf5|fast5|raw|pdb|csv|tsv)$", url)
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|rawdata|fasta"
+            + r"|bigwig|bw|bai|bam|ppsx|pps|fastq|vcf|tif|bed|fits|mtx|h5|hdf5|fast5|raw|pdb|tsv)$", url)
 
         # after error checking:
     except TypeError:
