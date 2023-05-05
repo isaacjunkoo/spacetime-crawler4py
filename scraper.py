@@ -64,6 +64,9 @@ def is_valid(url) -> bool:
         #   *.informatics.uci.edu/*
         #      *.stat.uci.edu/*
 
+        if "cbcl.ics.uci.edu" in str(url):
+            return False
+
         parsed = urlparse(url)
         # if not an http or https link (if the scheme isnt http or https...), return false
         # print("parsed scheme: ", parsed.scheme)
@@ -119,8 +122,8 @@ def is_valid(url) -> bool:
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|rdata|rds|matvar"
             + r"|epub|dll|cnf|tgz|sha1|flac|key|gct|mpg|nc|nc4|mrc|mrcs|pkl|lsm"
             + r"|thmx|mso|arff|rtf|jar|csv|dcm|obj|stl|mzml|mzxml|sbml|sim|simdata|odt|czi|mat|czi"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|rawdata|fasta"
-            + r"|bigwig|bw|bai|bam|ppsx|pps|fastq|vcf|tif|bed|fits|mtx|h5|hdf5|fast5|raw|pdb|tsv)$", url)
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|rawdata|fasta|out|tab|edgecount"
+            + r"|bigwig|bw|bai|bam|ppsx|pps|fastq|vcf|tif|bed|fits|mtx|h5|hdf5|fast5|raw|pdb|tsv|sam)$", url)
 
         # after error checking:
     except TypeError:
@@ -129,9 +132,12 @@ def is_valid(url) -> bool:
 
 
 if __name__ == "__main__":
-    print(is_valid("https://www.ics.uci.edu/~dylanlv/index"))
-    print("dylanlv:", is_valid("https://www.ics.uci.edu/~dylanlv/index.html"))
+    # print(is_valid("https://www.ics.uci.edu/~dylanlv/index"))
+    # print("dylanlv:", is_valid("https://www.ics.uci.edu/~dylanlv/index.html"))
 
+    url = "https://cbcl.ics.uci.edu/public_data/shilab/forColleen/rMATs/colleen-hind-ctrl-KO-mm9/SAMPLE_1/REP_1/"
+    if "cbcl.ics.uci.edu" in url:
+        print("NOT ALLOWED")
     """
     # links = extract_next_links("http://sli.ics.uci.edu/Classes/2016W-178", resp)
     ret_links = []

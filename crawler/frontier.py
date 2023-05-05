@@ -75,14 +75,14 @@ class Frontier(object):
         urlhash = get_urlhash(url)
 
         # avoid being stuck in archive page with filters for too long
-        if ("archive.ics.uci.edu/ml/datasets.php" in url) and (len(urlparse(url).query) != 0):
+        if ("archive.ics.uci.edu/ml/datasets.php" in str(url)) and (len(urlparse(url).query) != 0):
             return False
 
         # avoid being stuck in gitlab commits
-        if ("gitlab.ics.uci.edu" in url) and ("/commit" in url):
+        if ("gitlab.ics.uci.edu" in str(url)) and ("/commit" in str(url)):
             return False
 
-        if (url == "https://cbcl.ics.uci.edu/doku.php") or (url == "https://cbcl.ics.uci.edu"):
+        if "cbcl.ics.uci.edu" in str(url):
             return False
 
         if urlhash not in self.save:
