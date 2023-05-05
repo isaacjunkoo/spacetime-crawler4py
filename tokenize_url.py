@@ -21,6 +21,14 @@ nltk.download('stopwords')
 def token_url(url):
     try:
         response = requests.get(url)
+        try:
+            if (response.headers.get('Content-Length')/(1024*1024) > 5):
+                return ([], 0, Simhash(""), False)
+                # too big! do not download
+        except:
+            print("Content-Length not in Header of ", url)
+            pass
+
         html_content = response.text
         soup = BeautifulSoup(html_content,
                              'html.parser')
@@ -53,6 +61,7 @@ def token_url(url):
 
 
 if __name__ == "__main__":
+
     # "http://sli.ics.uci.edu/Classes/2013-iCamp?action=login"
     # try:
     #     r = requests.head(
@@ -65,46 +74,48 @@ if __name__ == "__main__":
     # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
     # response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
 
-    # response = requests.get(
-    #     "https://cbcl.ics.uci.edu/public_data/shilab/other/GSM1163973_iCLIP1UT.minus.bw")
-    # html_content = response.text
-    # soup = BeautifulSoup(html_content,
-    #                      'html.parser')
-    # tokenizer = RegexpTokenizer(r'\w+')
-    # tokens = tokenizer.tokenize(soup.get_text())  # all the words
-    # words = defaultdict(int)
-    # print(tokens)
-    # print(len(tokens))
-    # for word in tokens:
-    #     words[word] += 1
+    response = requests.get(
+        "https://cbcl.ics.uci.edu/public_data/shilab/forColleen/rMATs/colleen-hind-ctrl-KO-mm9/SAMPLE_1/REP_1/Chimeric.out.sam")
+
+    print("testing")
+    html_content = response.text
+    soup = BeautifulSoup(html_content,
+                         'html.parser')
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(soup.get_text())  # all the words
+    words = defaultdict(int)
+    print(tokens)
+    print(len(tokens))
+    for word in tokens:
+        words[word] += 1
 
     # print(sorted(dict(words).items(),
     #       key=lambda item: item[1], reverse=True)[:100])
     # # print("PRINTING SET")
     # # print(len(set(tokens)))
 
-    # # # Example usage
-    url = "https://www.informatics.uci.edu/"
-    url1 = "https://www.ics.uci.edu/"
-    response = requests.get(url)
-    html_content = response.text
-    soup = BeautifulSoup(html_content,
-                         'html.parser', from_encoding="utf-8")
-    response1 = requests.get(url1)
-    html_content1 = response1.text
-    soup1 = BeautifulSoup(html_content1,
-                          'html.parser')
+    # # # # Example usage
+    # url = "https://www.informatics.uci.edu/"
+    # url1 = "https://www.ics.uci.edu/"
+    # response = requests.get(url)
+    # html_content = response.text
+    # soup = BeautifulSoup(html_content,
+    #                      'html.parser', from_encoding="utf-8")
+    # response1 = requests.get(url1)
+    # html_content1 = response1.text
+    # soup1 = BeautifulSoup(html_content1,
+    #                       'html.parser')
 
-    simhash_obj = Simhash(soup.get_text())
-    simhash_obj1 = Simhash(soup1.get_text())
+    # simhash_obj = Simhash(soup.get_text())
+    # simhash_obj1 = Simhash(soup1.get_text())
 
-    # simhash_obj = Simhash("")
-    # # simhash_obj1 = Simhash("testing a string asdk")
+    # # simhash_obj = Simhash("")
+    # # # simhash_obj1 = Simhash("testing a string asdk")
 
-    hamming_distance = simhash_obj1.distance(simhash_obj)
-    # Normalize to a similarity score between 0 and 1
-    similarity_score = 1 - (hamming_distance / 64)
-    print(similarity_score)
+    # hamming_distance = simhash_obj1.distance(simhash_obj)
+    # # Normalize to a similarity score between 0 and 1
+    # similarity_score = 1 - (hamming_distance / 64)
+    # print(similarity_score)
 
     # # tokenizer = RegexpTokenizer(r'\w+')
     # # tokens = tokenizer.tokenize(soup.get_text())
