@@ -7,9 +7,6 @@ import scraper
 import time
 import re
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
 
 class Worker(Thread):
     def __init__(self, worker_id, config, frontier):
@@ -24,7 +21,7 @@ class Worker(Thread):
         super().__init__(daemon=True)
 
     def run(self):
-        print("ENTERED WORKER RUN")
+        # print("ENTERED WORKER RUN")
         # OUR CHANGES:
 
         while True:
@@ -37,7 +34,7 @@ class Worker(Thread):
                 print("THIS MANY UNIQUE URLS:", self.frontier.unique_count)
                 ####
                 print("This is the most common words dictionary:",
-                      sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:50])
+                      sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True))
                 print("This is the longest URL",
                       self.frontier.longest_url, "at len", self.frontier.max_len)
                 print("Amount of SubDomains for ics.uci.edu:",
@@ -48,7 +45,7 @@ class Worker(Thread):
                                 self.frontier.unique_count, "\n")
 
                         f.write("This is the most common words dictionary:",
-                                sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True)[:100], "\n")
+                                sorted(dict(self.frontier.word_map).items(), key=lambda item: item[1], reverse=True), "\n")
 
                         f.write("Amount of SubDomains for ics.uci.edu: " +
                                 len(self.frontier.ics_dict.keys()) + "\n")

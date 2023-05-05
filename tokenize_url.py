@@ -8,6 +8,8 @@ from utils.download import download
 import requests
 from bs4 import BeautifulSoup
 
+from collections import defaultdict
+
 from urllib.parse import urlparse
 
 
@@ -60,34 +62,44 @@ if __name__ == "__main__":
     # except requests.ConnectionError:
     #     print("failed to connect")
 
-    # # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
+    # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
     # response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
+
+    # response = requests.get(
+    #     "https://cbcl.ics.uci.edu/public_data/shilab/other/GSM1163973_iCLIP1UT.minus.bw")
     # html_content = response.text
     # soup = BeautifulSoup(html_content,
     #                      'html.parser')
     # tokenizer = RegexpTokenizer(r'\w+')
     # tokens = tokenizer.tokenize(soup.get_text())  # all the words
+    # words = defaultdict(int)
+    # print(tokens)
     # print(len(tokens))
-    # print("PRINTING SET")
-    # print(len(set(tokens)))
+    # for word in tokens:
+    #     words[word] += 1
+
+    # print(sorted(dict(words).items(),
+    #       key=lambda item: item[1], reverse=True)[:100])
+    # # print("PRINTING SET")
+    # # print(len(set(tokens)))
 
     # # # Example usage
-    # url = "https://www.informatics.uci.edu/"
+    url = "https://www.informatics.uci.edu/"
     url1 = "https://www.ics.uci.edu/"
-    # response = requests.get(url)
-    # html_content = response.text
-    # soup = BeautifulSoup(html_content,
-    #                      'html.parser', from_encoding="utf-8")
+    response = requests.get(url)
+    html_content = response.text
+    soup = BeautifulSoup(html_content,
+                         'html.parser', from_encoding="utf-8")
     response1 = requests.get(url1)
     html_content1 = response1.text
     soup1 = BeautifulSoup(html_content1,
                           'html.parser')
 
-    # simhash_obj = Simhash(soup.get_text())
+    simhash_obj = Simhash(soup.get_text())
     simhash_obj1 = Simhash(soup1.get_text())
 
-    simhash_obj = Simhash("")
-    # simhash_obj1 = Simhash("testing a string asdk")
+    # simhash_obj = Simhash("")
+    # # simhash_obj1 = Simhash("testing a string asdk")
 
     hamming_distance = simhash_obj1.distance(simhash_obj)
     # Normalize to a similarity score between 0 and 1

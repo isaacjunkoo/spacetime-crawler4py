@@ -82,6 +82,9 @@ class Frontier(object):
         if ("gitlab.ics.uci.edu" in url) and ("/commit" in url):
             return False
 
+        if (url == "https://cbcl.ics.uci.edu/doku.php") or (url == "https://cbcl.ics.uci.edu"):
+            return False
+
         if urlhash not in self.save:
             words, url_len, simhash_obj, is_run = token_url(
                 url_temp)
@@ -109,9 +112,9 @@ class Frontier(object):
                     # Normalize to a similarity score between 0 and 1
                     similarity_score = 1 - (hamming_distance / 64)
 
-                    if similarity_score > 0.86:
+                    if similarity_score > 0.85:
                         is_dupe = True
-                        print("DUPE!!! SIMILARITY SCORE IS:", similarity_score,
+                        print("DUPE NOT ADDING!!! SIMILARITY SCORE IS:", similarity_score,
                               str(url), "AND", str(k))
                         break
 
@@ -134,14 +137,9 @@ class Frontier(object):
                     self.longest_url = url_temp
                     self.max_len = url_len
 
-            ###
-
             self.save[urlhash] = (url, False)
             self.save.sync()
-            # print("Adding:", url, "To Frontier")
-            # self.to_be_downloaded.append(url)
 
-            ###
             self.unique_count += 1
 
     def mark_url_complete(self, url):

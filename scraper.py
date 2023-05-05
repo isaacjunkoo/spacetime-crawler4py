@@ -114,12 +114,13 @@ def is_valid(url) -> bool:
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
-            + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-            + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
-            + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1"
-            + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|js)$", url)
+            + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf|imzml"
+            + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names|root"
+            + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|rdata|rds|matvar"
+            + r"|epub|dll|cnf|tgz|sha1|flac|key|gct|mpg|nc|nc4|mrc|mrcs|pkl|lsm"
+            + r"|thmx|mso|arff|rtf|jar|csv|dcm|obj|stl|mzml|mzxml|sbml|sim|simdata|odt|czi|mat|czi"
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|js|rawdata|fasta"
+            + r"|bigwig|bw|bai|bam|ppsx|pps|bam|fastq|vcf|tif|bed|fits|nc|mtx|h5|hdf5|fast5|raw|pdb|csv|tsv)$", url)
 
         # after error checking:
     except TypeError:
@@ -128,6 +129,9 @@ def is_valid(url) -> bool:
 
 
 if __name__ == "__main__":
+    print(is_valid("https://www.ics.uci.edu/~dylanlv/index"))
+    print("dylanlv:", is_valid("https://www.ics.uci.edu/~dylanlv/index.html"))
+
     """
     # links = extract_next_links("http://sli.ics.uci.edu/Classes/2016W-178", resp)
     ret_links = []
