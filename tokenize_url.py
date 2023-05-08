@@ -54,7 +54,8 @@ def token_url(url):
         else:
             print("LOW INFORMATION / SHORT:", str(url),
                   "INFO VAL: ", info_val, "LENGTH:", unique_len)
-            return ([], 0, simhash_obj, True)
+            return ([], 0, simhash_obj, True) 
+        # if we dont want to add to the frontier and scrape for links, this returns false in the last spot?
     except:
         print("Could Not Tokenize:", str(url))
         return ([], 0, Simhash(""), False)
