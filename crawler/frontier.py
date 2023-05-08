@@ -27,6 +27,8 @@ class Frontier(object):
         self.max_len = 0
         self.longest_url = ''
 
+        self.lock = RLock() # new
+
         ####
         if not os.path.exists(self.config.save_file) and not restart:
             # Save file does not exist, but request to load save.
@@ -63,10 +65,12 @@ class Frontier(object):
             f"total urls discovered.")
 
     def get_tbd_url(self):
-        try:
-            return self.to_be_downloaded.pop()
-        except IndexError:
-            return None
+    
+        with self.lock: # for mulithreading, ENSURES ONLY 1 WORKER CAN POP OFF THE QUEUE AT A TIME
+            try:
+                return self.to_be_downloaded.pop()
+            except IndexError:
+                return None
 
     def add_url(self, url):
         url_temp = url
@@ -88,7 +92,7 @@ class Frontier(object):
         if urlhash not in self.save:
             words, url_len, simhash_obj, is_run = token_url(
                 url_temp)
-
+        
             url_dict = {}
             if is_run:
                 pattern1 = r'^.*\.ics\.uci\.edu.*$'
@@ -115,8 +119,11 @@ class Frontier(object):
                     if similarity_score > 0.85:
                         is_dupe = True
                         print("DUPE NOT ADDING!!! SIMILARITY SCORE IS:", similarity_score,
-                              str(url), "AND", str(k))
+                            str(url), "AND", str(k))
                         break
+
+                
+            with self.lock: # FOR MULTITHREADING ,  ENSURES THAT ONLY 1 WORKER CAN ACCESS AND UPDATE DATA AT A TIME
 
                 if not is_dupe:
                     # if isn't dupe,
@@ -137,10 +144,10 @@ class Frontier(object):
                     self.longest_url = url_temp
                     self.max_len = url_len
 
-            self.save[urlhash] = (url, False)
-            self.save.sync()
+                self.save[urlhash] = (url, False)
+                self.save.sync()
 
-            self.unique_count += 1
+                self.unique_count += 1
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)
@@ -149,5 +156,6 @@ class Frontier(object):
             self.logger.error(
                 f"Completed url {url}, but have not seen it before.")
 
-        self.save[urlhash] = (url, True)
-        self.save.sync()
+        with self.lock:
+            self.save[urlhash] = (url, True)
+            self.save.sync()

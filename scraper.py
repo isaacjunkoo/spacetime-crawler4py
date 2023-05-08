@@ -5,6 +5,8 @@ from urllib import robotparser
 from bs4 import BeautifulSoup
 import ssl
 
+import requests
+import xml.etree.ElementTree as ET
 
 def scraper(url, resp):
     """be polite
