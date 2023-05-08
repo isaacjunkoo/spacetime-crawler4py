@@ -24,6 +24,7 @@ class Frontier(object):
         self.cs_dict = {}
         self.stat_dict = {}
         self.inf_dict = {}
+        self.polite_dict = {}
         self.max_len = 0
         self.longest_url = ''
 
@@ -86,6 +87,7 @@ class Frontier(object):
         if ("gitlab.ics.uci.edu" in str(url)) and ("/commit" in str(url)):
             return False
 
+        # avoid tons of genome data thats mostly unreadable for users
         if "cbcl.ics.uci.edu" in str(url):
             return False
 

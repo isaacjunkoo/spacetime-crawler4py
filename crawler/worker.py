@@ -1,12 +1,14 @@
 from threading import Thread
-
 from inspect import getsource
 from utils.download import download
 from utils import get_logger
 import scraper
 import time
 import re
-
+# below imports are for sitemaps
+import requests
+import xml.etree.ElementTree as ET
+from urllib.parse import urlparse
 
 class Worker(Thread):
     def __init__(self, worker_id, config, frontier):
@@ -57,7 +59,14 @@ class Worker(Thread):
             try: 
                 
                 with self.lock: # FOR MULTITHREADING
-                    resp = download(tbd_url, self.config, self.logger)
+
+                    if tbd_url in self.frontier.polite_dict:    # if url has already been dowloaded
+                        time_since_last_req = time.monotonic() - self.frontier.polite_dict[tbd_url] # find time since last request
+                        if time_since_last_req > 0.5:  # if its less than 0.5 ms
+                            time.sleep(max(0, 0.5 - time_since_last_req))   # then sleep
+                        
+                    resp = download(tbd_url, self.config, self.logger)  # download url then
+                    self.frontier.polite_dict[tbd_url] = time.monotonic() # update the time again
                     if (resp.status == 302 or resp.status == 301):
                         for i in range(1, 5):
                             resp = download(resp.headers.get('Location'),
@@ -72,10 +81,48 @@ class Worker(Thread):
                         f"using cache {self.config.cache_server}.")
 
                     scraped_urls = scraper.scraper(tbd_url, resp)
-
+                    
+                    # sitemap_links = []
                     for scraped_url in scraped_urls:
                         self.frontier.add_url(scraped_url)
+
+                    
+                    # new code for adding sitemaps to frontier after checking robots.txt access:
+                    try:
+                        parsed_url = urlparse(tbd_url)
+                        root_url = parsed_url.scheme + "://" + parsed_url.netloc
+                        sitemap_host_url = root_url + "/sitemap.xml"
+                        sitemap_response = requests.get(sitemap_host_url)
+                        xml = ET.fromstring(sitemap_response.content)
+
+                        # Extract the URLs from the sitemap
+                        sitemap_urls = [elem.text for elem in xml.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
+                        for sitemap_url in sitemap_urls:  
+                            if sitemap_url not in self.save:   
+                                self.frontier.add_url(sitemap_url)
+                    except:
+                        pass
+
             except:
                 pass
 
             time.sleep(self.config.time_delay)
+
+
+if __name__ == "__main__":
+    frontier_mock_version = []
+    tbd_url = "www.google.com/gmail" 
+    parsed_url = urlparse(tbd_url)
+    root_url = parsed_url.scheme + "://" + parsed_url.netloc
+    sitemap_host_url = root_url + "/sitemap.xml"
+    sitemap_response = requests.get(sitemap_host_url)
+    xml = ET.fromstring(sitemap_response.content)
+
+    # Extract the URLs from the sitemap
+    sitemap_urls = [elem.text for elem in xml.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
+    for sitemap_url in sitemap_urls:  
+        frontier_mock_version.add_url(sitemap_url)
+
+
+    for thing in frontier_mock_version:
+        print(thing)
