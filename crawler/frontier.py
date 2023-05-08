@@ -28,7 +28,7 @@ class Frontier(object):
         self.max_len = 0
         self.longest_url = ''
 
-        self.lock = RLock() # new
+        self.lock = RLock()  # new
 
         ####
         if not os.path.exists(self.config.save_file) and not restart:
@@ -66,8 +66,8 @@ class Frontier(object):
             f"total urls discovered.")
 
     def get_tbd_url(self):
-    
-        with self.lock: # for mulithreading, ENSURES ONLY 1 WORKER CAN POP OFF THE QUEUE AT A TIME
+
+        with self.lock:  # for mulithreading, ENSURES ONLY 1 WORKER CAN POP OFF THE QUEUE AT A TIME
             try:
                 return self.to_be_downloaded.pop()
             except IndexError:
@@ -94,7 +94,7 @@ class Frontier(object):
         if urlhash not in self.save:
             words, url_len, simhash_obj, is_run = token_url(
                 url_temp)
-        
+
             url_dict = {}
             if is_run:
                 pattern1 = r'^.*\.ics\.uci\.edu.*$'
@@ -118,38 +118,37 @@ class Frontier(object):
                     # Normalize to a similarity score between 0 and 1
                     similarity_score = 1 - (hamming_distance / 64)
 
-                    if similarity_score > 0.85:
+                    if similarity_score > 0.86:
                         is_dupe = True
                         print("DUPE NOT ADDING!!! SIMILARITY SCORE IS:", similarity_score,
-                            str(url), "AND", str(k))
+                              str(url), "AND", str(k))
                         break
 
-                
-            with self.lock: # FOR MULTITHREADING ,  ENSURES THAT ONLY 1 WORKER CAN ACCESS AND UPDATE DATA AT A TIME
+                with self.lock:  # FOR MULTITHREADING ,  ENSURES THAT ONLY 1 WORKER CAN ACCESS AND UPDATE DATA AT A TIME
 
-                if not is_dupe:
-                    # if isn't dupe,
-                    # adds the tokens into the data
-                    for word in words:
-                        self.word_map[word] += 1
-                        # below snippet of code is updating the longest url content and length
+                    if not is_dupe:
+                        # if isn't dupe,
+                        # adds the tokens into the data
+                        for word in words:
+                            self.word_map[word] += 1
+                            # below snippet of code is updating the longest url content and length
 
-                    # add simhash to dictionary
-                    url_dict[url_temp] = simhash_obj
+                        # add simhash to dictionary
+                        url_dict[url_temp] = simhash_obj
 
-                    # and adds to the frontier
-                    print("Adding:", url, "To Frontier")
-                    self.to_be_downloaded.append(url)
+                        # and adds to the frontier
+                        print("Adding:", url, "To Frontier")
+                        self.to_be_downloaded.append(url)
 
-                # no matter what, check if its the longest url
-                if url_len > self.max_len:
-                    self.longest_url = url_temp
-                    self.max_len = url_len
+                    # no matter what, check if its the longest url
+                    if url_len > self.max_len:
+                        self.longest_url = url_temp
+                        self.max_len = url_len
 
-                self.save[urlhash] = (url, False)
-                self.save.sync()
+            self.save[urlhash] = (url, False)
+            self.save.sync()
 
-                self.unique_count += 1
+            self.unique_count += 1
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)

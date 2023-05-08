@@ -42,7 +42,7 @@ def token_url(url):
         unique_len = len(set(tokens))    # only the unique ones
 
         info_val = unique_len / url_len
-        if (info_val > 0.2) and (unique_len > 150):
+        if (info_val > 0.2) and (unique_len > 140):
 
             # getting all stopwords in English
             stop_words = set(stopwords.words('english'))
@@ -52,9 +52,9 @@ def token_url(url):
 
             return (tokens_without_stop_words, url_len, simhash_obj, True)
         else:
-            print("LOW INFORMATION / SHORT:", str(url),
+            print("LOW INFO! NO ADD:", str(url),
                   "INFO VAL: ", info_val, "LENGTH:", unique_len)
-            return ([], 0, simhash_obj, True) 
+            return ([], 0, simhash_obj, False)
         # if we dont want to add to the frontier and scrape for links, this returns false in the last spot?
     except:
         print("Could Not Tokenize:", str(url))
