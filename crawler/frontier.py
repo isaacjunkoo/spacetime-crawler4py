@@ -148,7 +148,8 @@ class Frontier(object):
             self.save.sync()
             self.unique_count += 1
 
-            self.logger.info("Visited", url)
+        self.logger.info(
+            f"Reached {url}.")
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)
