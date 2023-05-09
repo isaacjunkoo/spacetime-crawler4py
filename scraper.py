@@ -5,8 +5,8 @@ from urllib import robotparser
 from bs4 import BeautifulSoup
 import ssl
 
-import requests
-import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
+
 
 def scraper(url, resp):
     """be polite
@@ -124,8 +124,8 @@ def is_valid(url) -> bool:
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|rdata|rds|matvar"
             + r"|epub|dll|cnf|tgz|sha1|flac|key|gct|mpg|nc|nc4|mrc|mrcs|pkl|lsm"
             + r"|thmx|mso|arff|rtf|jar|csv|dcm|obj|stl|mzml|mzxml|sbml|sim|simdata|odt|czi|mat|czi"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|rawdata|fasta|out|tab|edgecount"
-            + r"|bigwig|bw|bai|bam|ppsx|pps|fastq|vcf|tif|bed|fits|mtx|h5|hdf5|fast5|raw|pdb|tsv|sam)$", url)
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|py|cpp|hpp|c|h|sh|cc|java|rawdata|fasta|out|tab|edgecount|sql|war"
+            + r"|bigwig|bw|bai|bam|ppsx|pps|fastq|vcf|tif|bed|fits|mtx|h5|hdf5|fast5|raw|pdb|tsv|sam|txt|apk|img)$", url)
 
         # after error checking:
     except TypeError:
@@ -137,39 +137,38 @@ if __name__ == "__main__":
     # print(is_valid("https://www.ics.uci.edu/~dylanlv/index"))
     # print("dylanlv:", is_valid("https://www.ics.uci.edu/~dylanlv/index.html"))
 
-    url = "https://cbcl.ics.uci.edu/public_data/shilab/forColleen/rMATs/colleen-hind-ctrl-KO-mm9/SAMPLE_1/REP_1/"
-    if "cbcl.ics.uci.edu" in url:
-        print("NOT ALLOWED")
-    """
-    # links = extract_next_links("http://sli.ics.uci.edu/Classes/2016W-178", resp)
-    ret_links = []
-    response = requests.get("http://sli.ics.uci.edu/Classes/2016W-178")
-    html_content = response.text
-    soup = BeautifulSoup(html_content,
-                         'html.parser', from_encoding="iso-8859-1")
-    for link in soup.find_all('a'):
-        newLink = link.get('href')
-        newLink = str(newLink)
-        newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
-        if not newLink.startswith('http://') and newLink.startswith('https://'):
-            newLink = urljoin(
-                "http://sli.ics.uci.edu/Classes/2016W-178", newLink)
-            # detect relative link
-        ret_links.append(newLink)
+    # url = "https://wics.ics.uci.edu/wics-winter-quarter-week-1-first-general-meeting-2"
+    # # if "cbcl.ics.uci.edu" in url:
+    # #     print("NOT ALLOWED")
 
-    links = []
-    for link in ret_links:
-        if is_valid(link):
-            print("IS VALID", link)
-            links.append(link)
-        else:
-            print("IS NOT VALID:", link)
-    # links = [link for link in ret_links if is_valid(link)]
-    print(links)
+    # # links = extract_next_links("http://sli.ics.uci.edu/Classes/2016W-178", resp)
+    # ret_links = []
+    # response = requests.get(url)
+    # html_content = response.text
+    # soup = BeautifulSoup(html_content,
+    #                      'html.parser', from_encoding="iso-8859-1")
+    # for link in soup.find_all('a'):
+    #     newLink = link.get('href')
+    #     newLink = str(newLink)
+    #     newLink = re.sub(r'#.*$', '', newLink)  # remove fragment
+    #     if not (newLink.startswith('http://') or newLink.startswith('https://')):
+    #         newLink = urljoin(url, newLink)
+    #         # detect relative link
+    #     ret_links.append(newLink)
 
-    print(is_valid('http://sli.ics.uci.edu/Classes/2016W-178?action=download&upname=HW1.pdf'))
-    print(is_valid("http://computableplant.ics.uci.edu/papers/2006/plcb-02-12-12_Wold.pdf"))
-    print(is_valid(
-        "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank-additional.zip"))
+    # links = []
+    # for link in ret_links:
+    #     if is_valid(link):
+    #         print("IS VALID", link)
+    #         links.append(link)
+    #     else:
+    #         print("IS NOT VALID:", link)
+    # # links = [link for link in ret_links if is_valid(link)]
+    # print(links)
+
+    # print(is_valid('http://sli.ics.uci.edu/Classes/2016W-178?action=download&upname=HW1.pdf'))
+    # print(is_valid("http://computableplant.ics.uci.edu/papers/2006/plcb-02-12-12_Wold.pdf"))
+    # print(is_valid(
+    #     "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank-additional.zip"))
     # test zip, pdf
-    """
+    pass

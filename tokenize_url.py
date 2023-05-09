@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 
 from urllib.parse import urlparse
+import traceback
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -22,9 +23,10 @@ def token_url(url):
     try:
         response = requests.get(url)
         try:
-            if (response.headers.get('Content-Length')/(1024*1024) > 5):
+            contentLength = response.headers.get('Content-Length')
+            if (contentLength is not None and int(contentLength)/(1024*1024) > 5):
                 return ([], 0, Simhash(""), False)
-                # too big! do not download
+                # too big! do not download. only sometimes available
         except:
             print("Content-Length not in Header of ", url)
             pass
@@ -75,9 +77,14 @@ if __name__ == "__main__":
     # print(len(urlparse("https://archive.ics.uci.edu/ml/datasets.php").query))
     # response = requests.get("https://archive.ics.uci.edu/ml/datasets.php")
 
-    response = requests.get(
-        "https://cbcl.ics.uci.edu/public_data/shilab/forColleen/rMATs/colleen-hind-ctrl-KO-mm9/SAMPLE_1/REP_1/Chimeric.out.sam")
-
+    response = requests
+    try:
+        print("test")
+        response = requests.get(
+            "https://www.ics.uci.edu/pub/ietf/http/")
+    except:
+        error_msg = traceback.format_exc()
+        print(error_msg)
     print("testing")
     html_content = response.text
     soup = BeautifulSoup(html_content,

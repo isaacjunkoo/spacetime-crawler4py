@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 
 class Frontier(object):
-    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}, max_len=0, longest_url=''):
+    def __init__(self, config, restart, word_map=defaultdict(int), unique_count=0, ics_dict={}, cs_dict={}, stat_dict={}, inf_dict={}, polite_dict={}, max_len=0, longest_url=''):
         self.logger = get_logger("FRONTIER")
         self.config = config
         self.to_be_downloaded = list()

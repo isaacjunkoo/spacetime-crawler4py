@@ -10,6 +10,8 @@ import requests
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 
+import traceback
+
 
 class Worker(Thread):
     def __init__(self, worker_id, config, frontier):
@@ -33,7 +35,7 @@ class Worker(Thread):
 
             if not tbd_url:
                 self.logger.info("Frontier is empty. Stopping Crawler.")
-                self.frontier.mark_url_complete(tbd_url)
+
                 print("THIS MANY UNIQUE URLS:", self.frontier.unique_count)
                 ####
                 print("This is the most common words dictionary:",
@@ -58,17 +60,17 @@ class Worker(Thread):
                 break
 
             try:
-
-                with self.lock:  # FOR MULTITHREADING
-
+                # print("DEBUG 1 STATEMENT")
+                with self.frontier.lock:  # FOR MULTITHREADING
+                    # print("DEBUG 2 STATEMENT")
                     if tbd_url in self.frontier.polite_dict:    # if url has already been dowloaded
                         # find time since last request
                         time_since_last_req = time.monotonic(
                         ) - self.frontier.polite_dict[tbd_url]
-                        if time_since_last_req > 0.7:  # if its less than 0.5 ms
+                        if time_since_last_req > 0.6:  # if its less than 0.5 ms
                             # then sleep
                             print("sleeping between workers for politeness")
-                            time.sleep(max(0, 0.7 - time_since_last_req))
+                            time.sleep(max(0, 0.6 - time_since_last_req))
 
                     # download url then
                     resp = download(tbd_url, self.config, self.logger)
@@ -87,14 +89,16 @@ class Worker(Thread):
                         f"Downloaded {tbd_url}, status <{resp.status}>, "
                         f"using cache {self.config.cache_server}.")
 
-                    scraped_urls = scraper.scraper(tbd_url, resp)
+                scraped_urls = scraper.scraper(tbd_url, resp)
 
+                with self.frontier.lock:
                     # sitemap_links = []
                     for scraped_url in scraped_urls:
                         self.frontier.add_url(scraped_url)
 
                     # new code for adding sitemaps to frontier after checking robots.txt access:
                     try:
+                        # print("DEBUG 3 STATEMENT")
                         parsed_url = urlparse(tbd_url)
                         root_url = parsed_url.scheme + "://" + parsed_url.netloc
                         sitemap_host_url = root_url + "/sitemap.xml"
@@ -111,6 +115,10 @@ class Worker(Thread):
                         pass
 
             except:
+                error_msg = traceback.format_exc()
+                print(error_msg)
                 pass
 
+            with self.frontier.lock:
+                self.frontier.mark_url_complete(tbd_url)
             time.sleep(self.config.time_delay)
