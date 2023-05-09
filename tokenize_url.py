@@ -49,7 +49,7 @@ def token_url(url):
             # getting all stopwords in English
             stop_words = set(stopwords.words('english'))
             tokens_without_stop_words = [
-                word for word in tokens if word.lower() not in stop_words]
+                word.lower() for word in tokens if word.lower() not in stop_words]
             # Calculate frequency of words
 
             return (tokens_without_stop_words, url_len, simhash_obj, True)
