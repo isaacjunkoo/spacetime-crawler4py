@@ -1,6 +1,6 @@
 import requests
 import cbor
-import time
+# import time
 
 from utils.response import Response
 

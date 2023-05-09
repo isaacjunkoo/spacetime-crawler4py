@@ -1,7 +1,6 @@
 import os
 import shelve
 from threading import Thread, RLock
-from queue import Queue, Empty
 
 from utils import get_logger, get_urlhash, normalize
 from scraper import is_valid
@@ -147,8 +146,9 @@ class Frontier(object):
 
             self.save[urlhash] = (url, False)
             self.save.sync()
-
             self.unique_count += 1
+
+            self.logger.info("Visited", url)
 
     def mark_url_complete(self, url):
         urlhash = get_urlhash(url)

@@ -4,7 +4,7 @@ from utils.download import download
 from utils import get_logger
 import scraper
 import time
-import re
+# import re
 # below imports are for sitemaps
 import requests
 import xml.etree.ElementTree as ET

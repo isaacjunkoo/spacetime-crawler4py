@@ -4,13 +4,13 @@ import nltk
 import ssl
 from nltk.tokenize import RegexpTokenizer
 from bs4 import BeautifulSoup
-from utils.download import download
+# from utils.download import download
 import requests
 from bs4 import BeautifulSoup
 
 from collections import defaultdict
 
-from urllib.parse import urlparse
+# from urllib.parse import urlparse
 import traceback
 
 
